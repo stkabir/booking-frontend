@@ -3,6 +3,8 @@ import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
 import { api, type Hotel } from '../../lib/api';
 
+export const prerender = false;
+
 const { slug } = Astro.params;
 
 let hotel: Hotel | null = null;
