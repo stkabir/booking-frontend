@@ -3,34 +3,18 @@ import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
 import { api, type Hotel } from '../../lib/api';
 
-export async function getStaticPaths() {
-  // Datos de ejemplo para el build estático
-  const sampleHotels = [
-    {
-      slug: 'hotel-boutique-playa-del-carmen',
-      name: 'Hotel Boutique Playa del Carmen',
-      description: 'Hermoso hotel boutique en el corazón de Playa del Carmen',
-      address: 'Calle 12 Norte, Playa del Carmen',
-      city: 'Playa del Carmen',
-      state: 'Quintana Roo',
-      country: 'México',
-      stars: 4,
-      price_per_night: 2500,
-      amenities: ['WiFi', 'Piscina', 'Spa', 'Restaurante'],
-      is_active: true,
-      featured: true,
-      latitude: 20.6296,
-      longitude: -87.0805
-    }
-  ];
+export const prerender = false;
 
-  return sampleHotels.map((hotel) => ({
-    params: { slug: hotel.slug },
-    props: { hotel },
-  }));
+const { slug } = Astro.params;
+
+let hotel: Hotel | null = null;
+try {
+  hotel = await api.getHotel(slug as string);
+} catch {
+  return Astro.redirect('/hotels');
 }
 
-const { hotel } = Astro.props;
+if (!hotel) return Astro.redirect('/hotels');
 
 const amenities = (() => {
   try { return hotel.amenities ? JSON.parse(hotel.amenities as unknown as string) : []; }

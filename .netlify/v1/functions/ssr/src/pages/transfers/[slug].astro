@@ -3,33 +3,18 @@ import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
 import { api, type Transfer } from '../../lib/api';
 
-export async function getStaticPaths() {
-  // Datos de ejemplo para el build estático
-  const sampleTransfers = [
-    {
-      slug: 'aeropuerto-cancun-playa-del-carmen',
-      name: 'Transfer Aeropuerto Cancún - Playa del Carmen',
-      description: 'Transporte privado del aeropuerto a tu hotel',
-      from_location: 'Aeropuerto Internacional de Cancún',
-      to_location: 'Playa del Carmen',
-      type: 'privado',
-      vehicle_type: 'SUV',
-      max_passengers: 8,
-      price: 1200,
-      is_private: true,
-      features: ['Aire acondicionado', 'Agua embotellada', 'WiFi'],
-      is_active: true,
-      featured: true
-    }
-  ];
+export const prerender = false;
 
-  return sampleTransfers.map((transfer) => ({
-    params: { slug: transfer.slug },
-    props: { transfer },
-  }));
+const { slug } = Astro.params;
+
+let transfer: Transfer | null = null;
+try {
+  transfer = await api.getTransfer(slug as string);
+} catch {
+  return Astro.redirect('/transfers');
 }
 
-const { transfer } = Astro.props;
+if (!transfer) return Astro.redirect('/transfers');
 
 const features = (() => {
   try { return transfer.features ? JSON.parse(transfer.features as unknown as string) : []; }

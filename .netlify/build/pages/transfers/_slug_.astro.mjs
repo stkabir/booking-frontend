@@ -1,0 +1,74 @@
+import { c as createComponent, i as renderComponent, r as renderTemplate, f as createAstro, m as maybeRenderHead, e as addAttribute } from '../../chunks/astro/server_ir7vVYZ-.mjs';
+import 'piccolore';
+import { $ as $$Layout } from '../../chunks/Layout_t02fJaQN.mjs';
+import { B as BookingForm } from '../../chunks/BookingForm_DxtdJ6x6.mjs';
+import { a as api } from '../../chunks/api_D4Nf1iaX.mjs';
+export { renderers } from '../../renderers.mjs';
+
+const $$Astro = createAstro();
+const prerender = false;
+const $$slug = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
+  Astro2.self = $$slug;
+  const { slug } = Astro2.params;
+  let transfer = null;
+  try {
+    transfer = await api.getTransfer(slug);
+  } catch {
+    return Astro2.redirect("/transfers");
+  }
+  if (!transfer) return Astro2.redirect("/transfers");
+  const features = (() => {
+    try {
+      return transfer.features ? JSON.parse(transfer.features) : [];
+    } catch {
+      return transfer.features || [];
+    }
+  })();
+  const transferSchema = {
+    "@context": "https://schema.org",
+    "@type": "TaxiService",
+    name: transfer.name,
+    description: transfer.description,
+    provider: {
+      "@type": "TravelAgency",
+      name: "Booking Caribe",
+      url: "https://bookingcaribe.com"
+    },
+    areaServed: {
+      "@type": "GeoCircle",
+      geoMidpoint: {
+        "@type": "GeoCoordinates",
+        latitude: 21.1619,
+        longitude: -86.8515
+      },
+      geoRadius: "150000"
+    },
+    offers: {
+      "@type": "Offer",
+      price: transfer.price,
+      priceCurrency: "MXN"
+    }
+  };
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": `${transfer.name} - Traslado ${transfer.from_location} a ${transfer.to_location}`, "description": `Traslado ${transfer.is_private ? "privado" : "compartido"} de ${transfer.from_location} a ${transfer.to_location}. ${transfer.vehicle_type} para ${transfer.max_passengers} pasajeros. Desde $${transfer.price.toLocaleString("es-MX")} MXN.`, "keywords": `traslado ${transfer.from_location} ${transfer.to_location}, transfer ${transfer.from_location}, transporte ${transfer.to_location}, ${transfer.name}`, "schema": transferSchema }, { "default": async ($$result2) => renderTemplate`  ${maybeRenderHead()}<div class="bg-base-200 py-3 border-b border-base-300"> <div class="container mx-auto px-4"> <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-base-content/60"> <a href="/" class="hover:text-primary transition-colors">Inicio</a> <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path> </svg> <a href="/transfers" class="hover:text-primary transition-colors">Traslados</a> <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path> </svg> <span class="text-base-content font-medium truncate max-w-[200px]">${transfer.name}</span> </nav> </div> </div> <div class="container mx-auto px-4 py-10"> <div class="grid grid-cols-1 lg:grid-cols-3 gap-10"> <!-- Main Content --> <div class="lg:col-span-2 space-y-8"> <!-- Header --> <div class="reveal-up"> <div class="flex flex-wrap gap-2 mb-3"> <span${addAttribute(`badge badge-lg ${transfer.is_private ? "badge-primary" : "badge-accent"}`, "class")}> ${transfer.is_private ? "Servicio Privado" : "Servicio Compartido"} </span> ${transfer.featured && renderTemplate`<span class="badge badge-secondary badge-lg">Destacado</span>`} <span class="badge badge-outline badge-lg capitalize">${transfer.vehicle_type}</span> </div> <h1 class="text-3xl md:text-4xl font-bold leading-tight">${transfer.name}</h1> </div> <!-- Route Card --> <div class="reveal-up delay-100 card bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 shadow-sm"> <div class="card-body p-6"> <h2 class="text-xl font-bold mb-6">Ruta del Traslado</h2> <div class="flex items-stretch gap-4"> <div class="flex flex-col items-center"> <div class="w-10 h-10 rounded-full bg-success flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg> </div> <div class="flex-1 w-0.5 bg-base-300 my-2"></div> <div class="w-10 h-10 rounded-full bg-error flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path> </svg> </div> </div> <div class="flex-1 space-y-4"> <div> <p class="text-xs text-base-content/50 uppercase tracking-wide mb-0.5">Punto de Salida</p> <p class="text-xl font-bold">${transfer.from_location}</p> </div> <div> <p class="text-xs text-base-content/50 uppercase tracking-wide mb-0.5">Punto de Llegada</p> <p class="text-xl font-bold">${transfer.to_location}</p> </div> </div> </div> <div class="grid grid-cols-2 gap-4 mt-6 pt-5 border-t border-orange-100"> <div class="text-center"> <p class="text-xs text-base-content/50">Tipo de servicio</p> <p class="font-bold mt-1">${transfer.type === "one-way" ? "\u2192 Solo Ida" : "\u21C4 Ida y Vuelta"}</p> </div> <div class="text-center"> <p class="text-xs text-base-content/50">Capacidad máxima</p> <p class="font-bold mt-1">${transfer.max_passengers} Pasajeros</p> </div> </div> </div> </div> <!-- Description --> ${transfer.description && renderTemplate`<div class="reveal-up delay-100"> <h2 class="text-2xl font-bold mb-4">Descripción del servicio</h2> <p class="text-base-content/70 leading-relaxed">${transfer.description}</p> </div>`} <!-- Vehicle Info --> <div class="reveal-up delay-200"> <h2 class="text-2xl font-bold mb-5">Información del vehículo</h2> <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> <div class="flex items-center gap-4 p-4 bg-base-200 rounded-2xl"> <div class="w-12 h-12 rounded-xl bg-primary/12 flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path> </svg> </div> <div> <p class="text-xs text-base-content/50">Tipo de vehículo</p> <p class="text-lg font-bold capitalize">${transfer.vehicle_type}</p> </div> </div> <div class="flex items-center gap-4 p-4 bg-base-200 rounded-2xl"> <div class="w-12 h-12 rounded-xl bg-primary/12 flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path> </svg> </div> <div> <p class="text-xs text-base-content/50">Capacidad máxima</p> <p class="text-lg font-bold">${transfer.max_passengers} Pasajeros</p> </div> </div> </div> </div> <!-- Features --> ${features.length > 0 && renderTemplate`<div class="reveal-up delay-200"> <h2 class="text-2xl font-bold mb-5">Características incluidas</h2> <div class="grid grid-cols-1 sm:grid-cols-2 gap-3"> ${features.map((feature) => renderTemplate`<div class="flex items-center gap-3 p-3.5 bg-base-200 rounded-xl text-sm"> <div class="w-5 h-5 rounded-full bg-success/15 flex items-center justify-center shrink-0"> <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path> </svg> </div> <span class="font-medium">${feature}</span> </div>`)} </div> </div>`} <!-- Info Alerts --> <div class="reveal-up delay-300 space-y-3"> <div class="alert bg-info/8 border border-info/20 rounded-2xl"> <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-info shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg> <div> <p class="font-bold text-sm">Información de llegada</p> <p class="text-sm text-base-content/65 mt-0.5">El conductor te esperará con un letrero con tu nombre en el área de llegadas.</p> </div> </div> <div class="alert bg-success/8 border border-success/20 rounded-2xl"> <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path> </svg> <div> <p class="font-bold text-sm">Cancelación Gratuita</p> <p class="text-sm text-base-content/65 mt-0.5">Cancela hasta 24 horas antes sin ningún cargo.</p> </div> </div> </div> </div> <!-- Sidebar Booking Card --> <div class="lg:col-span-1"> <div class="sticky top-20 space-y-4"> <div class="card bg-base-100 shadow-lg border border-base-200 reveal-right"> <div class="card-body p-6"> <div class="text-center mb-4"> <p class="text-xs text-base-content/50 uppercase tracking-wide mb-1"> ${transfer.type === "one-way" ? "Solo ida" : "Ida y vuelta"} </p> <p class="text-4xl font-bold price-gradient">
+$${transfer.price.toLocaleString("es-MX")} <span class="text-base font-normal text-base-content/50 ml-1">MXN</span> </p> </div> <div class="divider my-3"></div> ${renderComponent($$result2, "BookingForm", BookingForm, { "client:load": true, "itemType": "transfer", "itemName": transfer.name, "itemPrice": transfer.price, "itemSlug": transfer.slug, "client:component-hydration": "load", "client:component-path": "C:/laragon/www/booking-frontend/src/components/BookingForm", "client:component-export": "default" })} <div class="divider my-3"></div> <!-- Trust Points --> <ul class="space-y-2 text-xs text-base-content/65"> ${["Servicio 24/7", "Conductores certificados", "Veh\xEDculos nuevos", "Seguimiento en tiempo real"].map((item) => renderTemplate`<li class="flex items-center gap-2"> <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path> </svg> ${item} </li>`)} </ul> <div class="mt-4"> <a href="tel:+529981234567" class="btn btn-outline btn-block btn-sm gap-2"> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path> </svg>
+¿Dudas? Llámanos
+</a> </div> </div> </div> </div> </div> </div> </div>  <section class="bg-base-200 py-14 mt-8"> <div class="container mx-auto px-4 text-center"> <h2 class="text-2xl font-bold mb-2">Otras opciones de traslado</h2> <p class="text-base-content/60 mb-6">Explora más rutas disponibles en el Caribe Mexicano</p> <a href="/transfers" class="btn btn-secondary btn-lg text-white">
+Ver todos los traslados
+</a> </div> </section> ` })}`;
+}, "C:/laragon/www/booking-frontend/src/pages/transfers/[slug].astro", void 0);
+
+const $$file = "C:/laragon/www/booking-frontend/src/pages/transfers/[slug].astro";
+const $$url = "/transfers/[slug]";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$slug,
+  file: $$file,
+  prerender,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

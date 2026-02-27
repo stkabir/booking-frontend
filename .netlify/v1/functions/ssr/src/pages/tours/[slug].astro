@@ -3,37 +3,18 @@ import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
 import { api, type Tour } from '../../lib/api';
 
-export async function getStaticPaths() {
-  // Datos de ejemplo para el build estático
-  const sampleTours = [
-    {
-      slug: 'chichen-itza-tour-completo',
-      name: 'Chichén Itzá Tour Completo',
-      description: 'Explora la maravilla del mundo Maya con guía experto',
-      highlights: 'Visita al Castillo, El Cenote Sagrado y el Juego de Pelota',
-      destination: 'Chichén Itzá',
-      duration: '12 horas',
-      max_people: 25,
-      price_adult: 1800,
-      price_child: 900,
-      included: ['Transporte', 'Guía bilingüe', 'Entrada', 'Almuerzo'],
-      not_included: ['Propinas', 'Souvenirs'],
-      meeting_point: 'Hotel de tu preferencia',
-      difficulty_level: 'moderate',
-      is_active: true,
-      featured: true,
-      latitude: 20.6843,
-      longitude: -88.5678
-    }
-  ];
+export const prerender = false;
 
-  return sampleTours.map((tour) => ({
-    params: { slug: tour.slug },
-    props: { tour },
-  }));
+const { slug } = Astro.params;
+
+let tour: Tour | null = null;
+try {
+  tour = await api.getTour(slug as string);
+} catch {
+  return Astro.redirect('/tours');
 }
 
-const { tour } = Astro.props;
+if (!tour) return Astro.redirect('/tours');
 
 const included = (() => {
   try { return tour.included ? JSON.parse(tour.included as unknown as string) : []; }
