@@ -1,0 +1,256 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { api } from '../../lib/api';
+
+const tours = await api.getTours().catch(() => []);
+
+// Unique destinations for filter
+const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean);
+---
+
+<Layout
+  title="Tours y Actividades en Cancún y Riviera Maya"
+  description="Los mejores tours en Cancún, Chichén Itzá, Cozumel, Tulum, Playa del Carmen e Isla Mujeres. Experiencias únicas en el Caribe Mexicano al mejor precio."
+  keywords="tours cancun, excursiones riviera maya, tour chichen itza, tour cozumel, tour tulum, snorkel cancun, cenotes riviera maya, tours playa del carmen, isla mujeres tour"
+  transparent={true}
+>
+  <!-- Page Header -->
+  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/2"></div>
+      <div class="absolute bottom-10 left-1/4 w-48 h-48 rounded-full bg-emerald-300/8"></div>
+    </div>
+    <div class="container mx-auto px-4 pt-28 pb-20 relative z-10">
+      <nav aria-label="Breadcrumb" class="text-white/60 text-sm mb-6 flex items-center gap-2">
+        <a href="/" class="hover:text-white transition-colors">Inicio</a>
+        <span>/</span>
+        <span class="text-white font-medium">Tours</span>
+      </nav>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+        Tours y Actividades<br/>
+        <span class="text-emerald-200">en el Caribe Mexicano</span>
+      </h1>
+      <p class="text-xl text-white/75 max-w-xl">
+        Chichén Itzá, cenotes, snorkel en Cozumel, Tulum místico y más. Vive experiencias que recordarás para siempre.
+      </p>
+      <div class="flex flex-wrap gap-3 mt-8">
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          🌴 {tours.length}+ tours disponibles
+        </div>
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          👨‍👩‍👧 Para familias y grupos
+        </div>
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          ⭐ Guías certificados
+        </div>
+      </div>
+    </div>
+    <div class="overflow-hidden" aria-hidden="true">
+      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
+        <path fill="#fffbf7" d="M0,30 C480,60 960,0 1440,35 L1440,50 L0,50 Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <!-- Filters Bar -->
+    <div class="card bg-base-100 shadow-md border border-base-200 mb-8 reveal-up">
+      <div class="card-body p-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Search -->
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Buscar</span>
+            </label>
+            <input
+              type="text"
+              id="tour-search"
+              placeholder="Nombre del tour..."
+              class="input input-bordered input-sm"
+            />
+          </div>
+
+          <!-- Destination -->
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Destino</span>
+            </label>
+            <select id="tour-destination" class="select select-bordered select-sm">
+              <option value="">Todos los destinos</option>
+              {destinations.map(dest => (
+                <option value={dest}>{dest}</option>
+              ))}
+            </select>
+          </div>
+
+          <!-- Difficulty -->
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Dificultad</span>
+            </label>
+            <select id="tour-difficulty" class="select select-bordered select-sm">
+              <option value="">Todas</option>
+              <option value="easy">Fácil</option>
+              <option value="moderate">Moderado</option>
+              <option value="hard">Difícil</option>
+            </select>
+          </div>
+
+          <!-- Sort -->
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Ordenar</span>
+            </label>
+            <select id="tour-sort" class="select select-bordered select-sm">
+              <option value="featured">Destacados primero</option>
+              <option value="price-asc">Precio: Menor a Mayor</option>
+              <option value="price-desc">Precio: Mayor a Menor</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Header -->
+    <div class="flex justify-between items-center mb-6">
+      <p class="text-base-content/70">
+        <span id="tour-count" class="font-bold text-base-content">{tours.length}</span> tours disponibles
+      </p>
+    </div>
+
+    <!-- Tours Grid -->
+    <div id="tours-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+      {tours.map((tour, i) => (
+        <article
+          class={`card bg-base-100 shadow-md border border-base-200 card-lift reveal-up delay-${Math.min((i % 3 + 1) * 100, 400)} overflow-hidden`}
+          data-name={tour.name.toLowerCase()}
+          data-destination={tour.destination?.toLowerCase() || ''}
+          data-difficulty={tour.difficulty_level}
+          data-price={tour.price_adult}
+          data-featured={tour.featured ? '1' : '0'}
+        >
+          <figure class="h-52 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-600"></div>
+            <div class="absolute inset-0 flex items-center justify-center opacity-20">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              </svg>
+            </div>
+            {tour.featured && (
+              <div class="absolute top-3 right-3 badge badge-hot text-xs px-2.5 py-1">Destacado</div>
+            )}
+            <div class="absolute top-3 left-3">
+              <span class="badge badge-neutral badge-sm">
+                {tour.difficulty_level === 'easy' ? 'Fácil' : tour.difficulty_level === 'moderate' ? 'Moderado' : 'Difícil'}
+              </span>
+            </div>
+          </figure>
+
+          <div class="card-body p-5">
+            <h2 class="font-bold text-lg leading-tight line-clamp-2">{tour.name}</h2>
+            <p class="text-sm text-base-content/60 line-clamp-2 mt-1">{tour.description}</p>
+
+            <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 text-xs text-base-content/55">
+              <span class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                {tour.destination}
+              </span>
+              <span class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {tour.duration}
+              </span>
+              <span class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Hasta {tour.max_people} personas
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-base-200">
+              <div>
+                <p class="text-xs text-base-content/50">Precio adulto desde</p>
+                <p class="text-2xl font-bold price-gradient">
+                  ${tour.price_adult.toLocaleString('es-MX')}
+                  <span class="text-xs font-normal text-base-content/50 ml-0.5">MXN</span>
+                </p>
+                {tour.price_child && (
+                  <p class="text-xs text-base-content/50">Niños: ${tour.price_child.toLocaleString('es-MX')}</p>
+                )}
+              </div>
+              <a href={`/tours/${tour.slug}`} class="btn btn-primary btn-sm px-5">
+                Ver detalles
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Empty State -->
+    <div id="tours-empty" class="hidden text-center py-20">
+      <p class="text-6xl mb-4">🔍</p>
+      <h3 class="text-2xl font-bold mb-2">No se encontraron tours</h3>
+      <p class="text-base-content/60">Intenta ajustar los filtros de búsqueda</p>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const searchInput = document.getElementById('tour-search') as HTMLInputElement;
+  const destSelect = document.getElementById('tour-destination') as HTMLSelectElement;
+  const diffSelect = document.getElementById('tour-difficulty') as HTMLSelectElement;
+  const sortSelect = document.getElementById('tour-sort') as HTMLSelectElement;
+  const grid = document.getElementById('tours-grid');
+  const empty = document.getElementById('tours-empty');
+  const countEl = document.getElementById('tour-count');
+
+  function filterTours() {
+    const search = searchInput?.value.toLowerCase() || '';
+    const dest = destSelect?.value.toLowerCase() || '';
+    const diff = diffSelect?.value || '';
+    const sort = sortSelect?.value || 'featured';
+
+    const cards = Array.from(grid?.querySelectorAll('article') || []) as HTMLElement[];
+
+    let visible: HTMLElement[] = [];
+    cards.forEach(card => {
+      const name = card.dataset.name || '';
+      const cardDest = card.dataset.destination || '';
+      const cardDiff = card.dataset.difficulty || '';
+
+      const matchSearch = !search || name.includes(search);
+      const matchDest = !dest || cardDest.includes(dest);
+      const matchDiff = !diff || cardDiff === diff;
+
+      if (matchSearch && matchDest && matchDiff) {
+        card.style.display = '';
+        visible.push(card);
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // Sort visible cards
+    visible.sort((a, b) => {
+      if (sort === 'price-asc') return Number(a.dataset.price) - Number(b.dataset.price);
+      if (sort === 'price-desc') return Number(b.dataset.price) - Number(a.dataset.price);
+      return Number(b.dataset.featured) - Number(a.dataset.featured);
+    });
+
+    // Reorder in DOM
+    visible.forEach(card => grid?.appendChild(card));
+
+    if (countEl) countEl.textContent = String(visible.length);
+    if (empty) empty.classList.toggle('hidden', visible.length > 0);
+  }
+
+  searchInput?.addEventListener('input', filterTours);
+  destSelect?.addEventListener('change', filterTours);
+  diffSelect?.addEventListener('change', filterTours);
+  sortSelect?.addEventListener('change', filterTours);
+</script>

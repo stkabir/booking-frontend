@@ -1,0 +1,84 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Mis Reservas - Booking Caribe"
+  description="Consulta el estado de tus reservas de tours, hoteles y traslados en el Caribe Mexicano."
+  noindex={true}
+>
+  <div class="container mx-auto px-4 py-16 max-w-2xl">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-bold mb-3">Consultar mi Reserva</h1>
+      <p class="text-base-content/60">
+        Ingresa tu número de reserva y el email que usaste para buscar tu reserva.
+      </p>
+    </div>
+
+    <div class="card bg-base-100 shadow-lg border border-base-200">
+      <div class="card-body p-8">
+        <form id="lookup-form" class="space-y-5">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Número de Reserva *</span>
+            </label>
+            <input
+              type="text"
+              id="booking-id"
+              placeholder="Ej: BC-2026-0001"
+              class="input input-bordered font-mono"
+              required
+            />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Email *</span>
+            </label>
+            <input
+              type="email"
+              id="booking-email"
+              placeholder="tu@email.com"
+              class="input input-bordered"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Buscar reserva
+          </button>
+        </form>
+
+        <!-- Result placeholder -->
+        <div id="booking-result" class="hidden mt-6">
+          <div class="divider"></div>
+          <div class="alert alert-info rounded-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>El sistema de consulta de reservas estará disponible próximamente. Mientras tanto, contáctanos por WhatsApp o email.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center space-y-3">
+      <p class="text-base-content/60 text-sm">¿No encuentras tu reserva?</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="https://wa.me/529981234567" target="_blank" rel="noopener" class="btn btn-sm bg-green-500 hover:bg-green-600 border-0 text-white gap-2">
+          Chat WhatsApp
+        </a>
+        <a href="/contact" class="btn btn-sm btn-outline">Formulario de contacto</a>
+        <a href="tel:+529981234567" class="btn btn-sm btn-ghost">Llamar</a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const form = document.getElementById('lookup-form') as HTMLFormElement;
+  const result = document.getElementById('booking-result');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    result?.classList.remove('hidden');
+  });
+</script>

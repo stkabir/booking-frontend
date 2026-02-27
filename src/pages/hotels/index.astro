@@ -1,0 +1,83 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HotelList from '../../components/HotelList';
+import { api } from '../../lib/api';
+
+const hotels = await api.getHotels().catch(() => []);
+---
+
+<Layout
+  title="Hoteles en Riviera Maya y Cancún"
+  description="Encuentra los mejores hoteles en Cancún, Playa del Carmen, Tulum y toda la Riviera Maya. Reserva al mejor precio con cancelación gratuita."
+  keywords="hoteles cancun, hoteles riviera maya, hoteles playa del carmen, hoteles tulum, alojamiento caribe mexicano, resorts cancun, hoteles 5 estrellas cancun"
+  transparent={true}
+>
+  <!-- Page Header -->
+  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #0891b2 0%, #0e7490 50%, #164e63 100%);">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-white/5"></div>
+      <div class="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-cyan-400/8"></div>
+    </div>
+    <div class="container mx-auto px-4 pt-28 pb-20 relative z-10">
+      <nav aria-label="Breadcrumb" class="text-white/60 text-sm mb-6 flex items-center gap-2">
+        <a href="/" class="hover:text-white transition-colors">Inicio</a>
+        <span>/</span>
+        <span class="text-white font-medium">Hoteles</span>
+      </nav>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+        Hoteles en el<br/>
+        <span class="text-cyan-200">Caribe Mexicano</span>
+      </h1>
+      <p class="text-xl text-white/75 max-w-xl">
+        Desde boutiques frente al mar hasta resorts all-inclusive. Encuentra el alojamiento perfecto para tus vacaciones.
+      </p>
+      <div class="flex flex-wrap gap-3 mt-8">
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          🏨 {hotels.length}+ hoteles disponibles
+        </div>
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          ✅ Cancelación gratuita
+        </div>
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          💳 Mejor precio garantizado
+        </div>
+      </div>
+    </div>
+    <!-- Wave bottom -->
+    <div class="overflow-hidden line-height-0" aria-hidden="true">
+      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
+        <path fill="#fffbf7" d="M0,25 C360,55 720,0 1080,30 C1260,45 1380,10 1440,25 L1440,50 L0,50 Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Hotel List with Filters (React) -->
+  <div class="container mx-auto px-4 py-12">
+    <HotelList client:load initialHotels={hotels} />
+  </div>
+
+  <!-- SEO Content Block -->
+  <section class="bg-base-200 py-16">
+    <div class="container mx-auto px-4 max-w-3xl">
+      <h2 class="text-2xl font-bold mb-4 reveal-up">¿Por qué reservar tu hotel con Booking Caribe?</h2>
+      <div class="grid md:grid-cols-2 gap-6 text-sm text-base-content/70 reveal-up delay-100">
+        <div>
+          <h3 class="font-semibold text-base-content mb-2">Selección curada</h3>
+          <p>Cada hotel ha sido revisado por nuestro equipo. Solo publicamos alojamientos con excelentes reseñas y relación calidad-precio.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-base-content mb-2">Precio más bajo garantizado</h3>
+          <p>Si encuentras el mismo hotel más barato en otro sitio, te hacemos el reembolso de la diferencia.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-base-content mb-2">Destinos en Riviera Maya</h3>
+          <p>Cancún, Playa del Carmen, Tulum, Cozumel, Isla Mujeres y muchos más destinos del Caribe Mexicano.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-base-content mb-2">Reserva en minutos</h3>
+          <p>Proceso de reserva simple y seguro. Confirmación inmediata por email con todos los detalles de tu estancia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,119 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Sobre Nosotros - Booking Caribe"
+  description="Conoce a Booking Caribe, tu agencia de confianza para tours, hoteles y traslados en el Caribe Mexicano. Cancún, Riviera Maya, Tulum y más."
+  keywords="booking caribe nosotros, agencia turismo cancun, sobre booking caribe, quien somos"
+  transparent={true}
+>
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);">
+    <div class="container mx-auto px-4 pt-32 pb-20 relative z-10 text-center">
+      <p class="text-primary-content/60 text-sm font-bold uppercase tracking-widest mb-4">Sobre Nosotros</p>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+        Tu viaje,<br/>
+        <span class="font-display italic text-cyan-200">nuestra pasión</span>
+      </h1>
+      <p class="text-xl text-white/70 max-w-2xl mx-auto">
+        Somos una empresa mexicana dedicada a crear experiencias de viaje inolvidables en el Caribe Mexicano.
+      </p>
+    </div>
+    <div class="overflow-hidden" aria-hidden="true">
+      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
+        <path fill="#fffbf7" d="M0,25 C480,55 960,0 1440,30 L1440,50 L0,50 Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-16 max-w-5xl">
+
+    <!-- Mission -->
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
+      <div class="reveal-left">
+        <p class="text-sm font-bold uppercase tracking-widest text-primary mb-3">Nuestra Misión</p>
+        <h2 class="text-3xl font-bold mb-4">Hacer el Caribe accesible para todos</h2>
+        <p class="text-base-content/70 leading-relaxed mb-4">
+          En Booking Caribe creemos que cada viajero merece vivir la magia del Caribe Mexicano sin complicaciones. Por eso reunimos en un solo lugar los mejores tours, hoteles y traslados de la Riviera Maya.
+        </p>
+        <p class="text-base-content/70 leading-relaxed">
+          Desde Cancún hasta Tulum, pasando por Cozumel, Chichén Itzá e Isla Mujeres — somos tu guía local para descubrir este paraíso.
+        </p>
+      </div>
+      <div class="reveal-right h-64 rounded-2xl overflow-hidden">
+        <div class="h-full bg-gradient-to-br from-cyan-400 to-teal-600 flex items-center justify-center">
+          <span class="text-8xl" aria-hidden="true">🌴</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Values -->
+    <div class="mb-20">
+      <div class="text-center mb-10">
+        <p class="reveal-up text-sm font-bold uppercase tracking-widest text-primary mb-3">Nuestros Valores</p>
+        <h2 class="reveal-up delay-100 text-3xl font-bold">Lo que nos define</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { icon: '🤝', title: 'Confianza', desc: 'Transparencia total en precios y servicios. Sin costos ocultos.' },
+          { icon: '⭐', title: 'Calidad', desc: 'Seleccionamos solo los mejores proveedores y experiencias.' },
+          { icon: '💚', title: 'Responsabilidad', desc: 'Turismo sostenible que respeta el medio ambiente y las comunidades.' },
+          { icon: '❤️', title: 'Pasión', desc: 'Amamos el Caribe y queremos compartir esa pasión contigo.' },
+        ].map(({ icon, title, desc }, i) => (
+          <div class={`reveal-up delay-${(i + 1) * 100} text-center p-6 bg-base-200 rounded-2xl`}>
+            <div class="text-4xl mb-3" aria-hidden="true">{icon}</div>
+            <h3 class="font-bold text-lg mb-2">{title}</h3>
+            <p class="text-sm text-base-content/65 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="bg-neutral rounded-3xl p-10 mb-20 reveal-scale">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+        {[
+          { num: '5,000+', label: 'Viajeros satisfechos' },
+          { num: '200+', label: 'Tours disponibles' },
+          { num: '7', label: 'Años de experiencia' },
+          { num: '4.9⭐', label: 'Calificación promedio' },
+        ].map(({ num, label }) => (
+          <div>
+            <p class="text-3xl font-bold text-primary">{num}</p>
+            <p class="text-neutral-content/60 text-sm mt-1">{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Destinations -->
+    <div class="mb-20">
+      <div class="text-center mb-10">
+        <h2 class="reveal-up text-3xl font-bold">Nuestros Destinos</h2>
+        <p class="reveal-up delay-100 text-base-content/60 mt-2">Expertos en el Caribe Mexicano</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {[
+          'Cancún', 'Playa del Carmen', 'Tulum', 'Cozumel',
+          'Isla Mujeres', 'Chichén Itzá', 'Bacalar', 'Holbox',
+        ].map((dest, i) => (
+          <div class={`reveal-up delay-${Math.min((i % 4 + 1) * 100, 400)} bg-base-200 rounded-2xl p-4 text-center hover:bg-primary/10 transition-colors cursor-default`}>
+            <p class="font-semibold">{dest}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center reveal-up">
+      <h2 class="text-3xl font-bold mb-4">¿Listo para tu próxima aventura?</h2>
+      <p class="text-base-content/60 mb-8">Estamos aquí para hacer de tu viaje una experiencia perfecta.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/tours" class="btn btn-primary btn-lg">Explorar Tours</a>
+        <a href="/contact" class="btn btn-outline btn-lg">Contáctanos</a>
+      </div>
+    </div>
+
+  </div>
+</Layout>

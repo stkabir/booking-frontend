@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow private/utility pages
+Disallow: /checkout
+Disallow: /bookings
+
+# Sitemap
+Sitemap: https://bookingcaribe.com/sitemap.xml

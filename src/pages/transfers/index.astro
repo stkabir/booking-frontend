@@ -1,0 +1,272 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { api } from '../../lib/api';
+
+const transfers = await api.getTransfers().catch(() => []);
+---
+
+<Layout
+  title="Traslados Aeropuerto Cancún - Privados y Compartidos"
+  description="Traslados privados y compartidos desde el Aeropuerto de Cancún a Playa del Carmen, Tulum, Riviera Maya y más. Reserva tu transfer al mejor precio."
+  keywords="traslado aeropuerto cancun, transfer cancun hotel, traslado privado cancun, traslado playa del carmen, traslado tulum, transporte cancun aeropuerto, transfer riviera maya"
+  transparent={true}
+>
+  <!-- Page Header -->
+  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 50%, #9a3412 100%);">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-0 left-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/2 -translate-x-1/2"></div>
+      <div class="absolute bottom-0 right-1/4 w-56 h-56 rounded-full bg-orange-300/8"></div>
+    </div>
+    <div class="container mx-auto px-4 pt-28 pb-20 relative z-10">
+      <nav aria-label="Breadcrumb" class="text-white/60 text-sm mb-6 flex items-center gap-2">
+        <a href="/" class="hover:text-white transition-colors">Inicio</a>
+        <span>/</span>
+        <span class="text-white font-medium">Traslados</span>
+      </nav>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+        Traslados desde el<br/>
+        <span class="text-amber-200">Aeropuerto de Cancún</span>
+      </h1>
+      <p class="text-xl text-white/75 max-w-xl">
+        Privados o compartidos. Puntual, seguro y confortable. Llega directo a tu hotel sin complicaciones.
+      </p>
+      <div class="flex flex-wrap gap-3 mt-8">
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          🚐 {transfers.length}+ rutas disponibles
+        </div>
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          🕐 Seguimiento en tiempo real
+        </div>
+        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
+          👨‍✈️ Conductores certificados
+        </div>
+      </div>
+    </div>
+    <div class="overflow-hidden" aria-hidden="true">
+      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
+        <path fill="#fffbf7" d="M0,20 C360,55 720,5 1080,35 C1260,50 1380,15 1440,20 L1440,50 L0,50 Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <!-- Filters -->
+    <div class="card bg-base-100 shadow-md border border-base-200 mb-8 reveal-up">
+      <div class="card-body p-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Origen</span>
+            </label>
+            <input type="text" id="tf-from" placeholder="Ej: Aeropuerto Cancún" class="input input-bordered input-sm" />
+          </div>
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Destino</span>
+            </label>
+            <input type="text" id="tf-to" placeholder="Ej: Playa del Carmen" class="input input-bordered input-sm" />
+          </div>
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Tipo de vehículo</span>
+            </label>
+            <select id="tf-vehicle" class="select select-bordered select-sm">
+              <option value="">Todos</option>
+              <option value="sedan">Sedán</option>
+              <option value="suv">SUV</option>
+              <option value="van">Van</option>
+              <option value="bus">Bus</option>
+            </select>
+          </div>
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text text-sm font-semibold">Servicio</span>
+            </label>
+            <select id="tf-type" class="select select-bordered select-sm">
+              <option value="">Todos</option>
+              <option value="private">Privado</option>
+              <option value="shared">Compartido</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Header -->
+    <div class="flex justify-between items-center mb-6">
+      <p class="text-base-content/70">
+        <span id="tf-count" class="font-bold text-base-content">{transfers.length}</span> opciones de traslado
+      </p>
+      <select id="tf-sort" class="select select-bordered select-sm">
+        <option value="price-asc">Precio: Menor a Mayor</option>
+        <option value="price-desc">Precio: Mayor a Menor</option>
+        <option value="featured">Destacados</option>
+      </select>
+    </div>
+
+    <!-- Transfers Grid -->
+    <div id="tf-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+      {transfers.map((transfer, i) => (
+        <article
+          class={`card bg-base-100 shadow-md border border-base-200 card-lift reveal-up delay-${Math.min((i % 3 + 1) * 100, 400)}`}
+          data-from={transfer.from_location.toLowerCase()}
+          data-to={transfer.to_location.toLowerCase()}
+          data-vehicle={transfer.vehicle_type.toLowerCase()}
+          data-private={transfer.is_private ? 'private' : 'shared'}
+          data-price={transfer.price}
+          data-featured={transfer.featured ? '1' : '0'}
+        >
+          <div class="card-body p-6">
+            <div class="flex items-start justify-between gap-2 mb-4">
+              <h2 class="font-bold text-lg leading-tight">{transfer.name}</h2>
+              <span class={`badge badge-sm shrink-0 ${transfer.is_private ? 'badge-primary' : 'badge-accent'}`}>
+                {transfer.is_private ? 'Privado' : 'Compartido'}
+              </span>
+            </div>
+
+            {transfer.description && (
+              <p class="text-sm text-base-content/60 line-clamp-2 mb-4">{transfer.description}</p>
+            )}
+
+            <!-- Route -->
+            <div class="bg-base-200 rounded-xl p-4 mb-4">
+              <div class="flex items-center gap-2.5 text-sm">
+                <div class="w-2.5 h-2.5 rounded-full bg-success shrink-0 ring-2 ring-success/30"></div>
+                <span class="font-semibold truncate">{transfer.from_location}</span>
+              </div>
+              <div class="flex items-center gap-2.5 my-2">
+                <div class="ml-[4px] w-px h-6 bg-base-300"></div>
+                <span class="text-xs text-base-content/40 ml-0.5">
+                  {transfer.type === 'one-way' ? '→ Solo ida' : '⇄ Ida y vuelta'}
+                </span>
+              </div>
+              <div class="flex items-center gap-2.5 text-sm">
+                <div class="w-2.5 h-2.5 rounded-full bg-error shrink-0 ring-2 ring-error/30"></div>
+                <span class="font-semibold truncate">{transfer.to_location}</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs text-base-content/55 mb-4">
+              <span class="flex items-center gap-1.5 capitalize">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                </svg>
+                {transfer.vehicle_type}
+              </span>
+              <span class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Hasta {transfer.max_passengers} pas.
+              </span>
+            </div>
+
+            {transfer.features && (
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                {(() => {
+                  try {
+                    const features = JSON.parse(transfer.features as unknown as string);
+                    return features.slice(0, 3).map((f: string) => (
+                      <span class="badge badge-outline badge-xs">{f}</span>
+                    ));
+                  } catch { return null; }
+                })()}
+              </div>
+            )}
+
+            <div class="flex items-center justify-between pt-4 border-t border-base-200">
+              <div>
+                <p class="text-xs text-base-content/50">{transfer.type === 'one-way' ? 'Solo ida' : 'Ida y vuelta'}</p>
+                <p class="text-2xl font-bold price-gradient">
+                  ${transfer.price.toLocaleString('es-MX')}
+                </p>
+              </div>
+              <a href={`/transfers/${transfer.slug}`} class="btn btn-secondary btn-sm px-5 text-white">
+                Reservar
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div id="tf-empty" class="hidden text-center py-20">
+      <p class="text-6xl mb-4">🔍</p>
+      <h3 class="text-2xl font-bold mb-2">No se encontraron traslados</h3>
+      <p class="text-base-content/60">Ajusta los filtros de búsqueda</p>
+    </div>
+  </div>
+
+  <!-- Why Us Section -->
+  <section class="bg-base-200 py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-10 reveal-up">¿Por qué reservar tu traslado con nosotros?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[
+          { icon: '🛡️', title: 'Seguro y confiable', desc: 'Conductores certificados con años de experiencia transportando turistas.' },
+          { icon: '⏰', title: 'Puntualidad garantizada', desc: 'Monitoreamos tu vuelo en tiempo real. Te esperamos aunque llegues tarde.' },
+          { icon: '💰', title: 'Sin costos ocultos', desc: 'El precio que ves es el precio que pagas. Sin sorpresas al llegar.' },
+        ].map(({ icon, title, desc }, i) => (
+          <div class={`reveal-up delay-${(i + 1) * 100} text-center`}>
+            <div class="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center text-3xl mx-auto mb-4">{icon}</div>
+            <h3 class="font-bold text-xl mb-2">{title}</h3>
+            <p class="text-base-content/65 text-sm leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const fromInput = document.getElementById('tf-from') as HTMLInputElement;
+  const toInput = document.getElementById('tf-to') as HTMLInputElement;
+  const vehicleSelect = document.getElementById('tf-vehicle') as HTMLSelectElement;
+  const typeSelect = document.getElementById('tf-type') as HTMLSelectElement;
+  const sortSelect = document.getElementById('tf-sort') as HTMLSelectElement;
+  const grid = document.getElementById('tf-grid');
+  const empty = document.getElementById('tf-empty');
+  const countEl = document.getElementById('tf-count');
+
+  function filterTransfers() {
+    const from = fromInput?.value.toLowerCase() || '';
+    const to = toInput?.value.toLowerCase() || '';
+    const vehicle = vehicleSelect?.value.toLowerCase() || '';
+    const type = typeSelect?.value || '';
+    const sort = sortSelect?.value || 'price-asc';
+
+    const cards = Array.from(grid?.querySelectorAll('article') || []) as HTMLElement[];
+    let visible: HTMLElement[] = [];
+
+    cards.forEach(card => {
+      const cardFrom = card.dataset.from || '';
+      const cardTo = card.dataset.to || '';
+      const cardVehicle = card.dataset.vehicle || '';
+      const cardPrivate = card.dataset.private || '';
+
+      const ok = (!from || cardFrom.includes(from))
+        && (!to || cardTo.includes(to))
+        && (!vehicle || cardVehicle === vehicle)
+        && (!type || cardPrivate === type);
+
+      card.style.display = ok ? '' : 'none';
+      if (ok) visible.push(card);
+    });
+
+    visible.sort((a, b) => {
+      if (sort === 'price-asc') return Number(a.dataset.price) - Number(b.dataset.price);
+      if (sort === 'price-desc') return Number(b.dataset.price) - Number(a.dataset.price);
+      return Number(b.dataset.featured) - Number(a.dataset.featured);
+    });
+
+    visible.forEach(card => grid?.appendChild(card));
+    if (countEl) countEl.textContent = String(visible.length);
+    if (empty) empty.classList.toggle('hidden', visible.length > 0);
+  }
+
+  fromInput?.addEventListener('input', filterTransfers);
+  toInput?.addEventListener('input', filterTransfers);
+  vehicleSelect?.addEventListener('change', filterTransfers);
+  typeSelect?.addEventListener('change', filterTransfers);
+  sortSelect?.addEventListener('change', filterTransfers);
+</script>
