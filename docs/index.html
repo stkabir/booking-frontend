@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Caribe — Documentación Técnica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:    #fffbf7;
+      --navy:     #0f172a;
+      --cyan:     #0891b2;
+      --cyan-lt:  #e0f2fe;
+      --cyan-dk:  #0c7ba1;
+      --coral:    #f97316;
+      --gold:     #f59e0b;
+      --muted:    #64748b;
+      --border:   #e2ddd8;
+      --code-bg:  #0f172a;
+      --sidebar-w: 260px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--navy);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── LAYOUT ── */
+    .shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--navy);
+      overflow-y: auto;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 40px;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 3px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 2px; }
+
+    .sidebar-brand {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 8px;
+    }
+
+    .sidebar-brand-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: .02em;
+      line-height: 1.2;
+    }
+
+    .sidebar-brand-logo span {
+      color: var(--cyan);
+    }
+
+    .sidebar-brand-tag {
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: rgba(255,255,255,.35);
+    }
+
+    .nav-section-label {
+      padding: 14px 24px 5px;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: rgba(255,255,255,.25);
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 24px;
+      color: rgba(255,255,255,.55);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      transition: color .2s, background .2s;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-link:hover {
+      color: rgba(255,255,255,.9);
+      background: rgba(255,255,255,.04);
+    }
+
+    .nav-link.active {
+      color: var(--cyan);
+      border-left-color: var(--cyan);
+      background: rgba(8,145,178,.08);
+    }
+
+    .nav-link .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .5;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      background: var(--navy);
+      padding: 80px 72px 64px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 85% 50%, rgba(8,145,178,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(249,115,22,.1) 0%, transparent 60%);
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(8,145,178,.15);
+      border: 1px solid rgba(8,145,178,.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.7); }
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 5vw, 68px);
+      font-weight: 300;
+      line-height: 1.05;
+      color: #fff;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--cyan);
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+      color: rgba(255,255,255,.5);
+      font-weight: 300;
+      max-width: 520px;
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      position: relative;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.35);
+    }
+
+    .stat-sep {
+      width: 1px;
+      background: rgba(255,255,255,.1);
+      align-self: stretch;
+    }
+
+    /* ── SECTIONS ── */
+    .content {
+      padding: 0 72px 120px;
+    }
+
+    .section {
+      padding-top: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 40px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      color: var(--cyan);
+      font-weight: 600;
+      letter-spacing: .08em;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.1;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--cyan);
+    }
+
+    /* ── OVERVIEW CARD ── */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .overview-cell {
+      background: var(--cream);
+      padding: 28px 32px;
+    }
+
+    .overview-cell-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .overview-cell-val {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--navy);
+    }
+
+    .overview-cell-val a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    .overview-cell-val a:hover { text-decoration: underline; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .badge-cyan { background: var(--cyan-lt); color: var(--cyan-dk); }
+    .badge-coral { background: #fff1e9; color: #c2500d; }
+    .badge-gold { background: #fef3c7; color: #92680c; }
+    .badge-navy { background: #e8ecf4; color: var(--navy); }
+
+    /* ── TECH STACK GRID ── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stack-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+    }
+
+    .stack-card:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 4px 20px rgba(8,145,178,.1);
+      transform: translateY(-2px);
+    }
+
+    .stack-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .stack-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .stack-ver {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stack-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── COLOR PALETTE ── */
+    .palette-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .swatch-chip {
+      width: 80px;
+      height: 56px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+
+    .swatch-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .swatch-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* ── TYPOGRAPHY SPECIMEN ── */
+    .type-specimen {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .type-row {
+      display: flex;
+      align-items: center;
+      padding: 20px 28px;
+      gap: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .type-row:last-child { border-bottom: none; }
+
+    .type-meta {
+      min-width: 140px;
+    }
+
+    .type-class {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--cyan);
+      background: var(--cyan-lt);
+      padding: 2px 7px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 3px;
+    }
+
+    .type-info {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .type-sample {
+      flex: 1;
+      color: var(--navy);
+    }
+
+    /* ── ANIMATION DEMOS ── */
+    .anim-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .anim-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .anim-demo {
+      width: 44px;
+      height: 44px;
+      background: var(--cyan-lt);
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .anim-info-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--navy);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .anim-info-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── ROUTES TABLE ── */
+    .route-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    .route-table thead tr {
+      background: var(--navy);
+      color: rgba(255,255,255,.7);
+    }
+
+    .route-table thead th {
+      text-align: left;
+      padding: 12px 18px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .route-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    .route-table tbody tr:hover { background: rgba(8,145,178,.04); }
+
+    .route-table td {
+      padding: 13px 18px;
+      vertical-align: middle;
+    }
+
+    .route-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: var(--cyan);
+      font-weight: 500;
+    }
+
+    .route-file {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    /* ── COMPONENT CARDS ── */
+    .component-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .component-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .component-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .component-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    .component-body {
+      padding: 18px 22px;
+    }
+
+    .component-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .prop-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .prop-item {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 12.5px;
+    }
+
+    .prop-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: var(--coral);
+      min-width: 100px;
+    }
+
+    .prop-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      background: #f1f5f9;
+      color: var(--muted);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .prop-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    /* ── API SECTION ── */
+    .api-base-box {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .api-base-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: rgba(255,255,255,.35);
+      flex-shrink: 0;
+    }
+
+    .api-base-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--cyan);
+    }
+
+    .endpoint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .endpoint-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 18px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .http-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .http-get { background: #dcfce7; color: #166534; }
+
+    .endpoint-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: var(--navy);
+      flex: 1;
+    }
+
+    .endpoint-fn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── INTERFACE BLOCK ── */
+    .interface-block {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .interface-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,.3);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 12px;
+    }
+
+    .iface-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: #e2e8f0;
+    }
+
+    .kw { color: #93c5fd; }         /* keyword */
+    .type-name { color: #fde68a; }  /* TypeScript type */
+    .prop-n { color: #a5b4fc; }     /* property */
+    .type-t { color: #6ee7b7; }     /* type annotation */
+    .str { color: #fca5a5; }        /* string literal */
+    .cm { color: #4b5563; }         /* comment */
+
+    /* ── PATTERNS SECTION ── */
+    .pattern-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .pattern-header {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pattern-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .pattern-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .pattern-body {
+      padding: 18px 22px;
+    }
+
+    .pattern-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .code-block {
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.75;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+
+    /* ── ENV TABLE ── */
+    .env-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .env-table thead tr { background: var(--navy); }
+    .env-table thead th {
+      text-align: left;
+      padding: 12px 18px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.6);
+    }
+
+    .env-table tbody tr { border-bottom: 1px solid var(--border); }
+    .env-table tbody tr:last-child { border-bottom: none; }
+    .env-table td { padding: 13px 18px; vertical-align: middle; }
+
+    .env-key {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--coral);
+      font-weight: 500;
+    }
+
+    .env-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .env-desc {
+      font-size: 12.5px;
+      color: var(--navy);
+    }
+
+    /* ── FILE TREE ── */
+    .tree {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 24px 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 2;
+      color: #94a3b8;
+    }
+
+    .tree .dir { color: var(--gold); }
+    .tree .file { color: #e2e8f0; }
+    .tree .note { color: #4b5563; }
+    .tree .special { color: var(--cyan); }
+
+    /* ── CALLOUT ── */
+    .callout {
+      display: flex;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .callout-warn {
+      background: #fff8e6;
+      border: 1px solid #f59e0b;
+      color: #92680c;
+    }
+
+    .callout-tip {
+      background: #f0fdf9;
+      border: 1px solid #10b981;
+      color: #065f46;
+    }
+
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .hero, .content { padding-left: 24px; padding-right: 24px; }
+      .stack-grid { grid-template-columns: 1fr 1fr; }
+      .component-grid { grid-template-columns: 1fr; }
+      .anim-grid { grid-template-columns: 1fr; }
+      .overview-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .stack-grid { grid-template-columns: 1fr; }
+      .hero-stats { flex-wrap: wrap; gap: 24px; }
+      .stat-sep { display: none; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ═══════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-logo">Booking<span>Caribe</span></div>
+      <div class="sidebar-brand-tag">Documentación Técnica — v1.0</div>
+    </div>
+
+    <div class="nav-section-label">Inicio</div>
+    <a href="#overview" class="nav-link active"><span class="dot"></span>Resumen del Proyecto</a>
+    <a href="#stack" class="nav-link"><span class="dot"></span>Stack Tecnológico</a>
+
+    <div class="nav-section-label">Diseño</div>
+    <a href="#design-system" class="nav-link"><span class="dot"></span>Sistema de Diseño</a>
+    <a href="#typography" class="nav-link"><span class="dot"></span>Tipografía</a>
+    <a href="#animations" class="nav-link"><span class="dot"></span>Animaciones</a>
+
+    <div class="nav-section-label">Arquitectura</div>
+    <a href="#structure" class="nav-link"><span class="dot"></span>Estructura de Archivos</a>
+    <a href="#routes" class="nav-link"><span class="dot"></span>Páginas y Rutas</a>
+    <a href="#components" class="nav-link"><span class="dot"></span>Componentes React</a>
+
+    <div class="nav-section-label">API & Datos</div>
+    <a href="#api" class="nav-link"><span class="dot"></span>Capa de API</a>
+    <a href="#interfaces" class="nav-link"><span class="dot"></span>Interfaces TypeScript</a>
+
+    <div class="nav-section-label">Configuración</div>
+    <a href="#env" class="nav-link"><span class="dot"></span>Variables de Entorno</a>
+    <a href="#patterns" class="nav-link"><span class="dot"></span>Patrones y Gotchas</a>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN
+  ════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-tag">Documentación Técnica</div>
+      <h1 class="hero-title">Booking <em>Caribe</em><br>Frontend</h1>
+      <p class="hero-subtitle">
+        Plataforma de reservas para tours, hoteles y traslados en Riviera Maya y Cancún.
+        Construida con Astro v5, DaisyUI v5 y React v19.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">14</div>
+          <div class="stat-label">Páginas</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Componentes React</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Interfaces API</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <div class="stat-num">SSR</div>
+          <div class="stat-label">Render Mode</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════════════════
+           1. OVERVIEW
+      ════════════════════════ -->
+      <section class="section" id="overview">
+        <div class="section-header reveal">
+          <span class="section-num">01</span>
+          <h2 class="section-title">Resumen del <em>Proyecto</em></h2>
+        </div>
+
+        <div class="overview-grid reveal">
+          <div class="overview-cell">
+            <div class="overview-cell-label">Framework Principal</div>
+            <div class="overview-cell-val">
+              <span class="badge badge-cyan">Astro v5</span>
+              &nbsp;SSR Standalone (Node Adapter)
+            </div>
+          </div>
+          <div class="overview-cell">
+            <div class="overview-cell-label">Plataforma</div>
+            <div class="overview-cell-val">Riviera Maya y Cancún — Tours, Hoteles, Traslados</div>
+          </div>
+          <div class="overview-cell">
+            <div class="overview-cell-label">CSS Framework</div>
+            <div class="overview-cell-val">
+              <span class="badge badge-gold">Tailwind CSS v4</span>
+              &nbsp;+&nbsp;
+              <span class="badge badge-coral">DaisyUI v5</span>
+            </div>
+          </div>
+          <div class="overview-cell">
+            <div class="overview-cell-label">Interactividad</div>
+            <div class="overview-cell-val">
+              <span class="badge badge-navy">React v19</span>
+              &nbsp;via <code>@astrojs/react</code>, client:load
+            </div>
+          </div>
+          <div class="overview-cell">
+            <div class="overview-cell-label">API Base URL</div>
+            <div class="overview-cell-val">
+              <a href="#">PUBLIC_API_URL</a> || <code>http://localhost:8000/api</code>
+            </div>
+          </div>
+          <div class="overview-cell">
+            <div class="overview-cell-label">SEO</div>
+            <div class="overview-cell-val">Sitemap dinámico, robots.txt, noindex en páginas privadas</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           2. STACK
+      ════════════════════════ -->
+      <section class="section" id="stack">
+        <div class="section-header reveal">
+          <span class="section-num">02</span>
+          <h2 class="section-title">Stack <em>Tecnológico</em></h2>
+        </div>
+
+        <div class="stack-grid">
+          <div class="stack-card reveal">
+            <div class="stack-icon" style="background:#f0f9ff;">🚀</div>
+            <div class="stack-name">Astro</div>
+            <div class="stack-ver">v5 — Node SSR Adapter</div>
+            <div class="stack-desc">Framework principal. SSR standalone con Node adapter. Islas de interactividad via <code>client:load</code> en componentes React.</div>
+          </div>
+          <div class="stack-card reveal">
+            <div class="stack-icon" style="background:#fef9ee;">⚡</div>
+            <div class="stack-name">Tailwind CSS</div>
+            <div class="stack-ver">v4 — @import "tailwindcss"</div>
+            <div class="stack-desc">Configurado con directiva <code>@theme</code> en CSS nativo. Sin archivo <code>tailwind.config.js</code>. Tokens en <code>global.css</code>.</div>
+          </div>
+          <div class="stack-card reveal">
+            <div class="stack-icon" style="background:#fff0f0;">🎨</div>
+            <div class="stack-name">DaisyUI</div>
+            <div class="stack-ver">v5 — @plugin "daisyui"</div>
+            <div class="stack-desc">Componentes de UI. Registrado via directiva <code>@plugin</code> de Tailwind v4. Tema custom con colores del proyecto.</div>
+          </div>
+          <div class="stack-card reveal">
+            <div class="stack-icon" style="background:#f0fdf4;">⚛️</div>
+            <div class="stack-name">React</div>
+            <div class="stack-ver">v19 — @astrojs/react</div>
+            <div class="stack-desc">Usado exclusivamente para componentes interactivos: BookingForm, CheckoutPage, HotelList, HotelFilters.</div>
+          </div>
+          <div class="stack-card reveal">
+            <div class="stack-icon" style="background:#f8f0ff;">🔷</div>
+            <div class="stack-name">TypeScript</div>
+            <div class="stack-ver">Strict mode</div>
+            <div class="stack-desc">Interfaces en <code>src/lib/api.ts</code>. Tipado de Hotel, Tour, Transfer y Banner. Todos los fetch con tipado genérico.</div>
+          </div>
+          <div class="stack-card reveal">
+            <div class="stack-icon" style="background:#fff7f0;">🖋️</div>
+            <div class="stack-name">Google Fonts</div>
+            <div class="stack-ver">2 familias tipográficas</div>
+            <div class="stack-desc"><strong>Plus Jakarta Sans</strong> (body, weights 300–600) + <strong>Cormorant Garamond</strong> (display, clase <code>.font-display</code>).</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           3. DESIGN SYSTEM
+      ════════════════════════ -->
+      <section class="section" id="design-system">
+        <div class="section-header reveal">
+          <span class="section-num">03</span>
+          <h2 class="section-title">Sistema de <em>Diseño</em></h2>
+        </div>
+
+        <p style="color:var(--muted);font-size:13.5px;margin-bottom:28px;" class="reveal">
+          Definido completamente en <code>src/styles/global.css</code> usando la directiva <code>@theme</code> de Tailwind v4.
+          Sin archivo de configuración externo — todo en CSS nativo.
+        </p>
+
+        <h3 style="font-size:15px;font-weight:600;color:var(--navy);margin-bottom:18px;" class="reveal">Paleta de Colores</h3>
+        <div class="palette-row reveal">
+          <div class="swatch">
+            <div class="swatch-chip" style="background:#0891b2;"></div>
+            <div class="swatch-name">Primary</div>
+            <div class="swatch-hex">#0891b2</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-chip" style="background:#f97316;"></div>
+            <div class="swatch-name">Secondary</div>
+            <div class="swatch-hex">#f97316</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-chip" style="background:#f59e0b;"></div>
+            <div class="swatch-name">Accent</div>
+            <div class="swatch-hex">#f59e0b</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-chip" style="background:#0f172a;border:1px solid #e2ddd8;"></div>
+            <div class="swatch-name">Neutral</div>
+            <div class="swatch-hex">#0f172a</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-chip" style="background:#fffbf7;border:1px solid #e2ddd8;"></div>
+            <div class="swatch-name">Base-100</div>
+            <div class="swatch-hex">#fffbf7</div>
+          </div>
+        </div>
+
+        <h3 style="font-size:15px;font-weight:600;color:var(--navy);margin:28px 0 16px;" class="reveal">Clases de Utilidad Custom</h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" class="reveal">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.font-display</div>
+            <div style="font-size:12px;color:var(--muted);">Cormorant Garamond — headings decorativos</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.price-gradient</div>
+            <div style="font-size:12px;color:var(--muted);">Gradiente text-clip en precios destacados</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.glass</div>
+            <div style="font-size:12px;color:var(--muted);">Glassmorphism light — backdrop-blur</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.glass-dark</div>
+            <div style="font-size:12px;color:var(--muted);">Glassmorphism dark — fondos oscuros</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.card-lift</div>
+            <div style="font-size:12px;color:var(--muted);">Shadow + transform en hover de tarjetas</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.hero-ocean</div>
+            <div style="font-size:12px;color:var(--muted);">Gradiente ocean para secciones hero</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.transparent-nav</div>
+            <div style="font-size:12px;color:var(--muted);">Navbar transparente sobre hero (texto blanco)</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">.delay-100...700</div>
+            <div style="font-size:12px;color:var(--muted);">Stagger delays para animaciones de reveal</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan);margin-bottom:5px;">#whatsapp-btn</div>
+            <div style="font-size:12px;color:var(--muted);">Botón fijo bottom-right, animación pulse verde</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           4. TYPOGRAPHY
+      ════════════════════════ -->
+      <section class="section" id="typography">
+        <div class="section-header reveal">
+          <span class="section-num">04</span>
+          <h2 class="section-title">Tipografía</h2>
+        </div>
+
+        <div class="type-specimen reveal">
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-class">.font-display</div>
+              <div class="type-info">Cormorant Garamond<br>300–600 · serif</div>
+            </div>
+            <div class="type-sample">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#0f172a;line-height:1.1;">Riviera Maya</span>
+              <br>
+              <span style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;font-style:italic;color:#0891b2;">Descubre el paraíso</span>
+            </div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-class">body (default)</div>
+              <div class="type-info">Plus Jakarta Sans<br>300–600 · sans-serif</div>
+            </div>
+            <div class="type-sample">
+              <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:400;color:#0f172a;">Tours, hoteles y traslados en Cancún.</span>
+              <br>
+              <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:300;color:#64748b;">Texto secundario y descripciones de contenido.</span>
+            </div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-class">code / mono</div>
+              <div class="type-info">JetBrains Mono<br>400–500 · monospace</div>
+            </div>
+            <div class="type-sample">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#0891b2;">const api = new BookingAPI();</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           5. ANIMATIONS
+      ════════════════════════ -->
+      <section class="section" id="animations">
+        <div class="section-header reveal">
+          <span class="section-num">05</span>
+          <h2 class="section-title">Animaciones y <em>Scroll Reveal</em></h2>
+        </div>
+
+        <p style="color:var(--muted);font-size:13.5px;margin-bottom:24px;" class="reveal">
+          Sistema de reveal via <code>IntersectionObserver</code> registrado en <code>Layout.astro</code>.
+          Agregar clase base → transición a <code>.visible</code> al entrar en viewport.
+        </p>
+
+        <div class="anim-grid reveal">
+          <div class="anim-card">
+            <div class="anim-demo">↑</div>
+            <div>
+              <div class="anim-info-name">.reveal-up → .visible</div>
+              <div class="anim-info-desc">Slide desde abajo + fade in. Efecto más común en tarjetas y secciones.</div>
+            </div>
+          </div>
+          <div class="anim-card">
+            <div class="anim-demo">←</div>
+            <div>
+              <div class="anim-info-name">.reveal-left → .visible</div>
+              <div class="anim-info-desc">Slide desde la izquierda. Para elementos que entran desde el lateral.</div>
+            </div>
+          </div>
+          <div class="anim-card">
+            <div class="anim-demo">→</div>
+            <div>
+              <div class="anim-info-name">.reveal-right → .visible</div>
+              <div class="anim-info-desc">Slide desde la derecha. Para sidebars y contenido alterno.</div>
+            </div>
+          </div>
+          <div class="anim-card">
+            <div class="anim-demo">◎</div>
+            <div>
+              <div class="anim-info-name">.reveal-scale → .visible</div>
+              <div class="anim-info-desc">Scale desde 0.9 + fade in. Para badges, iconos y elementos puntuales.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-tip reveal" style="margin-top:20px;">
+          <div class="callout-icon">💡</div>
+          <div>Combinar con <code>.delay-100</code> a <code>.delay-700</code> para crear efecto stagger en grids de tarjetas. Ej: <code>class="reveal-up delay-200"</code></div>
+        </div>
+
+        <div style="margin-top:16px;background:var(--code-bg);border-radius:10px;padding:20px 24px;" class="reveal">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;">Navbar scroll behavior</div>
+          <div class="iface-code">
+            <span class="cm">// En Layout.astro — JS inline</span><br>
+            <span class="kw">window</span>.addEventListener(<span class="str">'scroll'</span>, () => {<br>
+            &nbsp;&nbsp;<span class="kw">if</span> (<span class="kw">window</span>.scrollY > 60) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;nav.classList.add(<span class="str">'scrolled'</span>);<br>
+            &nbsp;&nbsp;} <span class="kw">else</span> {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;nav.classList.remove(<span class="str">'scrolled'</span>);<br>
+            &nbsp;&nbsp;}<br>
+            });
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           6. FILE STRUCTURE
+      ════════════════════════ -->
+      <section class="section" id="structure">
+        <div class="section-header reveal">
+          <span class="section-num">06</span>
+          <h2 class="section-title">Estructura de <em>Archivos</em></h2>
+        </div>
+
+        <div class="tree reveal">
+<span class="dir">booking-frontend/</span><br>
+├── <span class="dir">src/</span><br>
+│   ├── <span class="dir">components/</span>               <span class="note">← Componentes React (.tsx)</span><br>
+│   │   ├── <span class="special">BookingForm.tsx</span>        <span class="note">← Formulario de reserva con localStorage</span><br>
+│   │   ├── <span class="special">CheckoutPage.tsx</span>       <span class="note">← Página de checkout y pago</span><br>
+│   │   ├── <span class="special">HotelList.tsx</span>          <span class="note">← Grid de hoteles con card-lift</span><br>
+│   │   └── <span class="dir">filters/</span><br>
+│   │       └── <span class="special">HotelFilters.tsx</span>   <span class="note">← Filtros: ciudad, estrellas, precio</span><br>
+│   ├── <span class="dir">layouts/</span><br>
+│   │   └── <span class="special">Layout.astro</span>           <span class="note">← Head SEO, nav, footer, observers</span><br>
+│   ├── <span class="dir">lib/</span><br>
+│   │   └── <span class="special">api.ts</span>                 <span class="note">← Todas las llamadas API + interfaces TS</span><br>
+│   ├── <span class="dir">pages/</span><br>
+│   │   ├── <span class="file">index.astro</span>              <span class="note">← Homepage (transparent={true})</span><br>
+│   │   ├── <span class="file">about.astro</span><br>
+│   │   ├── <span class="file">contact.astro</span><br>
+│   │   ├── <span class="file">checkout.astro</span>           <span class="note">← noindex={true}</span><br>
+│   │   ├── <span class="file">bookings.astro</span>           <span class="note">← noindex={true}</span><br>
+│   │   ├── <span class="file">terms.astro</span><br>
+│   │   ├── <span class="file">privacy.astro</span><br>
+│   │   ├── <span class="file">sitemap.xml.ts</span>           <span class="note">← Sitemap dinámico (API route)</span><br>
+│   │   ├── <span class="dir">hotels/</span><br>
+│   │   │   ├── <span class="file">index.astro</span><br>
+│   │   │   └── <span class="file">[slug].astro</span><br>
+│   │   ├── <span class="dir">tours/</span><br>
+│   │   │   ├── <span class="file">index.astro</span><br>
+│   │   │   └── <span class="file">[slug].astro</span><br>
+│   │   └── <span class="dir">transfers/</span><br>
+│   │       ├── <span class="file">index.astro</span><br>
+│   │       └── <span class="file">[slug].astro</span><br>
+│   └── <span class="dir">styles/</span><br>
+│       └── <span class="special">global.css</span>             <span class="note">← @theme, animaciones, utilidades</span><br>
+├── <span class="dir">public/</span><br>
+│   └── <span class="file">robots.txt</span>                  <span class="note">← Crawl rules + apunta a /sitemap.xml</span><br>
+└── <span class="file">astro.config.mjs</span>                <span class="note">← output: 'server', Node adapter</span>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           7. ROUTES
+      ════════════════════════ -->
+      <section class="section" id="routes">
+        <div class="section-header reveal">
+          <span class="section-num">07</span>
+          <h2 class="section-title">Páginas y <em>Rutas</em></h2>
+        </div>
+
+        <div style="overflow:hidden;border:1px solid var(--border);border-radius:10px;" class="reveal">
+          <table class="route-table">
+            <thead>
+              <tr>
+                <th>Ruta</th>
+                <th>Archivo</th>
+                <th>Tipo</th>
+                <th>Notas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="route-path">/</span></td>
+                <td><span class="route-file">pages/index.astro</span></td>
+                <td><span class="badge badge-cyan">Página</span></td>
+                <td style="font-size:12px;color:var(--muted);">Hero, categorías, grids, stats, CTA. <code>transparent={true}</code></td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/hotels</span></td>
+                <td><span class="route-file">pages/hotels/index.astro</span></td>
+                <td><span class="badge badge-cyan">Página</span></td>
+                <td style="font-size:12px;color:var(--muted);">Grid con HotelList + HotelFilters</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/hotels/[slug]</span></td>
+                <td><span class="route-file">pages/hotels/[slug].astro</span></td>
+                <td><span class="badge badge-cyan">Dinámica</span></td>
+                <td style="font-size:12px;color:var(--muted);">Detalle hotel + BookingForm sidebar</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/tours</span></td>
+                <td><span class="route-file">pages/tours/index.astro</span></td>
+                <td><span class="badge badge-cyan">Página</span></td>
+                <td style="font-size:12px;color:var(--muted);">Listado de tours con filtros</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/tours/[slug]</span></td>
+                <td><span class="route-file">pages/tours/[slug].astro</span></td>
+                <td><span class="badge badge-cyan">Dinámica</span></td>
+                <td style="font-size:12px;color:var(--muted);">Detalle tour + BookingForm sidebar</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/transfers</span></td>
+                <td><span class="route-file">pages/transfers/index.astro</span></td>
+                <td><span class="badge badge-cyan">Página</span></td>
+                <td style="font-size:12px;color:var(--muted);">Listado de traslados</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/transfers/[slug]</span></td>
+                <td><span class="route-file">pages/transfers/[slug].astro</span></td>
+                <td><span class="badge badge-cyan">Dinámica</span></td>
+                <td style="font-size:12px;color:var(--muted);">Detalle traslado + BookingForm</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/checkout</span></td>
+                <td><span class="route-file">pages/checkout.astro</span></td>
+                <td><span class="badge badge-coral">Privada</span></td>
+                <td style="font-size:12px;color:var(--muted);">Lee localStorage. <code>noindex={true}</code></td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/bookings</span></td>
+                <td><span class="route-file">pages/bookings.astro</span></td>
+                <td><span class="badge badge-coral">Privada</span></td>
+                <td style="font-size:12px;color:var(--muted);"><code>noindex={true}</code></td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/about</span></td>
+                <td><span class="route-file">pages/about.astro</span></td>
+                <td><span class="badge badge-navy">Info</span></td>
+                <td style="font-size:12px;color:var(--muted);">Página institucional</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/contact</span></td>
+                <td><span class="route-file">pages/contact.astro</span></td>
+                <td><span class="badge badge-navy">Info</span></td>
+                <td style="font-size:12px;color:var(--muted);">Formulario de contacto</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/terms</span></td>
+                <td><span class="route-file">pages/terms.astro</span></td>
+                <td><span class="badge badge-navy">Legal</span></td>
+                <td style="font-size:12px;color:var(--muted);">Términos y condiciones</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/privacy</span></td>
+                <td><span class="route-file">pages/privacy.astro</span></td>
+                <td><span class="badge badge-navy">Legal</span></td>
+                <td style="font-size:12px;color:var(--muted);">Política de privacidad</td>
+              </tr>
+              <tr>
+                <td><span class="route-path">/sitemap.xml</span></td>
+                <td><span class="route-file">pages/sitemap.xml.ts</span></td>
+                <td><span class="badge badge-gold">API Route</span></td>
+                <td style="font-size:12px;color:var(--muted);">Sitemap dinámico — fetches all slugs from API</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           8. COMPONENTS
+      ════════════════════════ -->
+      <section class="section" id="components">
+        <div class="section-header reveal">
+          <span class="section-num">08</span>
+          <h2 class="section-title">Componentes <em>React</em></h2>
+        </div>
+
+        <div class="callout callout-tip reveal">
+          <div class="callout-icon">⚛️</div>
+          <div>Todos los componentes usan <code>client:load</code> en las páginas Astro. Se hidratan inmediatamente en el cliente.</div>
+        </div>
+
+        <div class="component-grid" style="margin-top:20px;">
+          <div class="component-card reveal">
+            <div class="component-header">
+              <span class="badge badge-cyan">TSX</span>
+              <span class="component-name">BookingForm.tsx</span>
+            </div>
+            <div class="component-body">
+              <div class="component-desc">
+                Formulario principal de reserva. Recolecta fechas, huéspedes y contacto.
+                Guarda datos en <code>localStorage</code> y redirige a <code>/checkout</code>.
+                Soporta código promo <strong>VERANO2026</strong> (15% descuento).
+              </div>
+              <ul class="prop-list">
+                <li class="prop-item">
+                  <span class="prop-name">itemId</span>
+                  <span class="prop-type">number</span>
+                  <span class="prop-desc">ID del tour/hotel/transfer</span>
+                </li>
+                <li class="prop-item">
+                  <span class="prop-name">itemType</span>
+                  <span class="prop-type">string</span>
+                  <span class="prop-desc">'hotel' | 'tour' | 'transfer'</span>
+                </li>
+                <li class="prop-item">
+                  <span class="prop-name">basePrice</span>
+                  <span class="prop-type">number</span>
+                  <span class="prop-desc">Precio base para cálculo</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="component-card reveal">
+            <div class="component-header">
+              <span class="badge badge-coral">TSX</span>
+              <span class="component-name">CheckoutPage.tsx</span>
+            </div>
+            <div class="component-body">
+              <div class="component-desc">
+                Lee datos guardados en <code>localStorage</code> por BookingForm.
+                Muestra resumen de reserva, permite seleccionar método de pago
+                y confirmar la transacción.
+              </div>
+              <ul class="prop-list">
+                <li class="prop-item">
+                  <span class="prop-name">(sin props)</span>
+                  <span class="prop-type">—</span>
+                  <span class="prop-desc">Lee directamente de localStorage</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="component-card reveal">
+            <div class="component-header">
+              <span class="badge badge-gold">TSX</span>
+              <span class="component-name">HotelList.tsx</span>
+            </div>
+            <div class="component-body">
+              <div class="component-desc">
+                Grid de tarjetas de hoteles con estilo <code>.card-lift</code>.
+                Parsea amenities con <code>try/catch</code> (pueden venir como JSON string).
+                Recibe hoteles ya filtrados del componente padre.
+              </div>
+              <ul class="prop-list">
+                <li class="prop-item">
+                  <span class="prop-name">hotels</span>
+                  <span class="prop-type">Hotel[]</span>
+                  <span class="prop-desc">Array de hoteles a renderizar</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="component-card reveal">
+            <div class="component-header">
+              <span class="badge badge-navy">TSX</span>
+              <span class="component-name">HotelFilters.tsx</span>
+            </div>
+            <div class="component-body">
+              <div class="component-desc">
+                Componente de filtros para la página <code>/hotels</code>.
+                Controla: búsqueda por texto, ciudad, estrellas, rango de precio y ordenamiento.
+                Comunica estado filtrado hacia arriba via callback.
+              </div>
+              <ul class="prop-list">
+                <li class="prop-item">
+                  <span class="prop-name">hotels</span>
+                  <span class="prop-type">Hotel[]</span>
+                  <span class="prop-desc">Todos los hoteles (sin filtrar)</span>
+                </li>
+                <li class="prop-item">
+                  <span class="prop-name">onFilter</span>
+                  <span class="prop-type">function</span>
+                  <span class="prop-desc">Callback con hoteles filtrados</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           9. API LAYER
+      ════════════════════════ -->
+      <section class="section" id="api">
+        <div class="section-header reveal">
+          <span class="section-num">09</span>
+          <h2 class="section-title">Capa de <em>API</em></h2>
+        </div>
+
+        <div class="api-base-box reveal">
+          <div class="api-base-label">Base URL</div>
+          <div class="api-base-url">import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api'</div>
+        </div>
+
+        <h3 style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:14px;" class="reveal">Hotels</h3>
+        <div class="endpoint-list reveal">
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/hotels</span>
+            <span class="endpoint-fn">api.getHotels()</span>
+          </div>
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/hotels?featured=1</span>
+            <span class="endpoint-fn">api.getFeaturedHotels()</span>
+          </div>
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/hotels/{slug}</span>
+            <span class="endpoint-fn">api.getHotel(slug)</span>
+          </div>
+        </div>
+
+        <h3 style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:14px;" class="reveal">Tours</h3>
+        <div class="endpoint-list reveal">
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/tours</span>
+            <span class="endpoint-fn">api.getTours()</span>
+          </div>
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/tours?featured=1</span>
+            <span class="endpoint-fn">api.getFeaturedTours()</span>
+          </div>
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/tours/{slug}</span>
+            <span class="endpoint-fn">api.getTour(slug)</span>
+          </div>
+        </div>
+
+        <h3 style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:14px;" class="reveal">Transfers</h3>
+        <div class="endpoint-list reveal">
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/transfers</span>
+            <span class="endpoint-fn">api.getTransfers()</span>
+          </div>
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/transfers?featured=1</span>
+            <span class="endpoint-fn">api.getFeaturedTransfers()</span>
+          </div>
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/transfers/{slug}</span>
+            <span class="endpoint-fn">api.getTransfer(slug)</span>
+          </div>
+        </div>
+
+        <h3 style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:14px;" class="reveal">Banners</h3>
+        <div class="endpoint-list reveal">
+          <div class="endpoint-row">
+            <span class="http-badge http-get">GET</span>
+            <span class="endpoint-path">/banners?position={position}</span>
+            <span class="endpoint-fn">api.getBanners(position)</span>
+          </div>
+        </div>
+
+        <div class="callout callout-tip reveal">
+          <div class="callout-icon">💡</div>
+          <div>El parámetro <code>position</code> en getBanners es opcional — default <code>'home'</code>. Posibles valores: <code>'home'</code>, <code>'hotels'</code>, <code>'tours'</code>, etc.</div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           10. INTERFACES
+      ════════════════════════ -->
+      <section class="section" id="interfaces">
+        <div class="section-header reveal">
+          <span class="section-num">10</span>
+          <h2 class="section-title">Interfaces <em>TypeScript</em></h2>
+        </div>
+
+        <div class="interface-block reveal">
+          <div class="interface-title">src/lib/api.ts — Hotel</div>
+          <div class="iface-code">
+<span class="kw">export interface</span> <span class="type-name">Hotel</span> {<br>
+&nbsp;&nbsp;<span class="prop-n">id</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">name</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">slug</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">description</span>: <span class="type-t">string | null</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">address</span>: <span class="type-t">string | null</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">city</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">stars</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">price_per_night</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">amenities</span>: <span class="type-t">string[] | null</span>;&nbsp;&nbsp;<span class="cm">// ⚠ puede ser JSON string</span><br>
+&nbsp;&nbsp;<span class="prop-n">is_active</span>: <span class="type-t">boolean</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">featured</span>: <span class="type-t">boolean</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">latitude</span>: <span class="type-t">number | null</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">longitude</span>: <span class="type-t">number | null</span>;<br>
+}
+          </div>
+        </div>
+
+        <div class="interface-block reveal">
+          <div class="interface-title">src/lib/api.ts — Tour</div>
+          <div class="iface-code">
+<span class="kw">export interface</span> <span class="type-name">Tour</span> {<br>
+&nbsp;&nbsp;<span class="prop-n">id</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">name</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">slug</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">destination</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">duration</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">max_people</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">price_adult</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">price_child</span>: <span class="type-t">number | null</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">included</span>: <span class="type-t">string[] | null</span>;&nbsp;&nbsp;<span class="cm">// ⚠ puede ser JSON string</span><br>
+&nbsp;&nbsp;<span class="prop-n">not_included</span>: <span class="type-t">string[] | null</span>;&nbsp;<span class="cm">// ⚠ puede ser JSON string</span><br>
+&nbsp;&nbsp;<span class="prop-n">difficulty_level</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">featured</span>: <span class="type-t">boolean</span>;<br>
+}
+          </div>
+        </div>
+
+        <div class="interface-block reveal">
+          <div class="interface-title">src/lib/api.ts — Transfer</div>
+          <div class="iface-code">
+<span class="kw">export interface</span> <span class="type-name">Transfer</span> {<br>
+&nbsp;&nbsp;<span class="prop-n">id</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">name</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">from_location</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">to_location</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">type</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">vehicle_type</span>: <span class="type-t">string</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">max_passengers</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">price</span>: <span class="type-t">number</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">is_private</span>: <span class="type-t">boolean</span>;<br>
+&nbsp;&nbsp;<span class="prop-n">features</span>: <span class="type-t">string[] | null</span>;&nbsp;<span class="cm">// ⚠ puede ser JSON string</span><br>
+}
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           11. ENV VARS
+      ════════════════════════ -->
+      <section class="section" id="env">
+        <div class="section-header reveal">
+          <span class="section-num">11</span>
+          <h2 class="section-title">Variables de <em>Entorno</em></h2>
+        </div>
+
+        <div class="callout callout-warn reveal">
+          <div class="callout-icon">⚠️</div>
+          <div>Crear archivo <code>.env</code> en la raíz del proyecto. Las variables con prefijo <code>PUBLIC_</code> son accesibles en el cliente via <code>import.meta.env</code>.</div>
+        </div>
+
+        <div style="margin-top:16px;" class="reveal">
+          <table class="env-table">
+            <thead>
+              <tr>
+                <th>Variable</th>
+                <th>Valor por defecto</th>
+                <th>Descripción</th>
+                <th>Requerida</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="env-key">PUBLIC_API_URL</span></td>
+                <td><span class="env-val">http://localhost:8000/api</span></td>
+                <td><span class="env-desc">URL base del backend Django/Laravel</span></td>
+                <td><span class="badge badge-coral">Producción</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:20px;" class="reveal">
+          <div class="code-block">
+<span style="color:#4b5563;"># .env.local (desarrollo)</span><br>
+<span style="color:#a5b4fc;">PUBLIC_API_URL</span>=http://localhost:8000/api<br>
+<br>
+<span style="color:#4b5563;"># .env.production</span><br>
+<span style="color:#a5b4fc;">PUBLIC_API_URL</span>=https://api.bookingcaribe.com/api
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════
+           12. PATTERNS
+      ════════════════════════ -->
+      <section class="section" id="patterns">
+        <div class="section-header reveal">
+          <span class="section-num">12</span>
+          <h2 class="section-title">Patrones y <em>Gotchas</em></h2>
+        </div>
+
+        <div class="pattern-card reveal">
+          <div class="pattern-header">
+            <div class="pattern-icon" style="background:#fff0f0;">⚠️</div>
+            <div class="pattern-title">Parseo de Arrays JSON desde API</div>
+          </div>
+          <div class="pattern-body">
+            <div class="pattern-desc">
+              Los campos <code>amenities</code>, <code>features</code>, <code>included</code> y <code>not_included</code>
+              pueden llegar como <strong>JSON string</strong> o como array real dependiendo del endpoint.
+              Siempre parsear con <code>try/catch</code>:
+            </div>
+            <div class="code-block">
+<span style="color:#93c5fd;">function</span> <span style="color:#fde68a;">parseArray</span>(value: <span style="color:#6ee7b7;">any</span>): <span style="color:#6ee7b7;">string[]</span> {<br>
+&nbsp;&nbsp;<span style="color:#93c5fd;">if</span> (Array.isArray(value)) <span style="color:#93c5fd;">return</span> value;<br>
+&nbsp;&nbsp;<span style="color:#93c5fd;">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#93c5fd;">return</span> JSON.parse(value) || [];<br>
+&nbsp;&nbsp;} <span style="color:#93c5fd;">catch</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#93c5fd;">return</span> value || [];<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-card reveal">
+          <div class="pattern-header">
+            <div class="pattern-icon" style="background:#f0fff8;">🎟️</div>
+            <div class="pattern-title">Código de Descuento</div>
+          </div>
+          <div class="pattern-body">
+            <div class="pattern-desc">
+              BookingForm.tsx implementa validación de código promocional.
+              El código activo aplica un <strong>15% de descuento</strong> al precio total.
+            </div>
+            <div class="code-block">
+<span style="color:#4b5563;">// En BookingForm.tsx</span><br>
+<span style="color:#93c5fd;">const</span> PROMO_CODE = <span style="color:#fca5a5;">"VERANO2026"</span>;<br>
+<span style="color:#93c5fd;">const</span> PROMO_DISCOUNT = 0.15; <span style="color:#4b5563;">// 15%</span><br>
+<br>
+<span style="color:#93c5fd;">if</span> (promoCode === PROMO_CODE) {<br>
+&nbsp;&nbsp;total = total * (1 - PROMO_DISCOUNT);<br>
+}
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-card reveal">
+          <div class="pattern-header">
+            <div class="pattern-icon" style="background:#f0f0ff;">🧭</div>
+            <div class="pattern-title">Navbar Transparente en Homepage</div>
+          </div>
+          <div class="pattern-body">
+            <div class="pattern-desc">
+              La homepage pasa <code>transparent={true}</code> a Layout.astro, lo que agrega la clase
+              <code>.transparent-nav</code> al navbar. Al hacer scroll mayor a 60px,
+              JS agrega la clase <code>.scrolled</code> que aplica fondo opaco.
+            </div>
+            <div class="code-block">
+<span style="color:#4b5563;">&lt;!-- En index.astro --&gt;</span><br>
+<span style="color:#fde68a;">&lt;Layout</span> <span style="color:#a5b4fc;">transparent</span>={<span style="color:#93c5fd;">true</span>}<span style="color:#fde68a;">&gt;</span><br>
+&nbsp;&nbsp;...<br>
+<span style="color:#fde68a;">&lt;/Layout&gt;</span><br>
+<br>
+<span style="color:#4b5563;">/* En global.css */</span><br>
+<span style="color:#a5b4fc;">.transparent-nav</span> { color: white; background: transparent; }<br>
+<span style="color:#a5b4fc;">.transparent-nav.scrolled</span> { background: white; color: navy; }
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-card reveal">
+          <div class="pattern-header">
+            <div class="pattern-icon" style="background:#fffbf0;">🔒</div>
+            <div class="pattern-title">Páginas noindex</div>
+          </div>
+          <div class="pattern-body">
+            <div class="pattern-desc">
+              Las páginas <code>/checkout</code> y <code>/bookings</code> no deben ser indexadas por buscadores.
+              Pasan <code>noindex={true}</code> al Layout para inyectar la meta tag correspondiente.
+            </div>
+            <div class="code-block">
+<span style="color:#4b5643;">&lt;!-- En checkout.astro y bookings.astro --&gt;</span><br>
+<span style="color:#fde68a;">&lt;Layout</span> <span style="color:#a5b4fc;">noindex</span>={<span style="color:#93c5fd;">true</span>}<span style="color:#fde68a;">&gt;</span><br>
+<br>
+<span style="color:#4b5563;">&lt;!-- Layout inyecta en &lt;head&gt;: --&gt;</span><br>
+<span style="color:#fde68a;">&lt;meta</span> <span style="color:#a5b4fc;">name</span>=<span style="color:#fca5a5;">"robots"</span> <span style="color:#a5b4fc;">content</span>=<span style="color:#fca5a5;">"noindex, nofollow"</span> <span style="color:#fde68a;">/&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-card reveal">
+          <div class="pattern-header">
+            <div class="pattern-icon" style="background:#f0fff4;">🗺️</div>
+            <div class="pattern-title">Sitemap Dinámico</div>
+          </div>
+          <div class="pattern-body">
+            <div class="pattern-desc">
+              <code>/sitemap.xml</code> es una API Route de Astro que fetcha todos los slugs del backend
+              en tiempo de request y genera el XML dinámicamente. Configurado en <code>public/robots.txt</code>.
+            </div>
+            <div class="code-block">
+<span style="color:#4b5563;"># public/robots.txt</span><br>
+User-agent: *<br>
+Allow: /<br>
+Disallow: /checkout<br>
+Disallow: /bookings<br>
+Sitemap: https://bookingcaribe.com/sitemap.xml
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-card reveal">
+          <div class="pattern-header">
+            <div class="pattern-icon" style="background:#f0faff;">💾</div>
+            <div class="pattern-title">Flujo de Reserva — localStorage</div>
+          </div>
+          <div class="pattern-body">
+            <div class="pattern-desc">
+              El flujo de reserva usa <code>localStorage</code> como canal entre páginas.
+              BookingForm guarda, CheckoutPage lee. No hay state management global.
+            </div>
+            <div class="code-block">
+<span style="color:#4b5563;">// BookingForm.tsx — guarda</span><br>
+localStorage.setItem(<span style="color:#fca5a5;">'booking'</span>, JSON.stringify({<br>
+&nbsp;&nbsp;itemId, itemType, dates, guests, contact, total<br>
+}));<br>
+router.push(<span style="color:#fca5a5;">'/checkout'</span>);<br>
+<br>
+<span style="color:#4b5563;">// CheckoutPage.tsx — lee</span><br>
+<span style="color:#93c5fd;">const</span> booking = JSON.parse(<br>
+&nbsp;&nbsp;localStorage.getItem(<span style="color:#fca5a5;">'booking'</span>) || <span style="color:#fca5a5;">'{}'</span><br>
+);
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /content -->
+  </main><!-- /main -->
+
+</div><!-- /shell -->
+
+<script>
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 60}ms`;
+    observer.observe(el);
+  });
+
+  // ── SIDEBAR ACTIVE STATE ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+        });
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-60px 0px -40% 0px' });
+
+  sections.forEach(section => sectionObserver.observe(section));
+</script>
+
+</body>
+</html>

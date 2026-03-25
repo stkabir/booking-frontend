@@ -1,9 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Pre-fill booking number from query param (set after checkout confirmation)
+const urlBookingNumber = Astro.url.searchParams.get('number') || '';
 ---
 
 <Layout
-  title="Mis Reservas - Booking Caribe"
+  title="Consultar Reserva - Booking Caribe"
   description="Consulta el estado de tus reservas de tours, hoteles y traslados en el Caribe Mexicano."
   noindex={true}
 >
@@ -11,7 +14,7 @@ import Layout from '../layouts/Layout.astro';
     <div class="text-center mb-10">
       <h1 class="text-3xl font-bold mb-3">Consultar mi Reserva</h1>
       <p class="text-base-content/60">
-        Ingresa tu número de reserva y el email que usaste para buscar tu reserva.
+        Ingresa tu número de reserva para ver el estado de tu reserva.
       </p>
     </div>
 
@@ -24,37 +27,86 @@ import Layout from '../layouts/Layout.astro';
             </label>
             <input
               type="text"
-              id="booking-id"
+              id="booking-number"
+              value={urlBookingNumber}
               placeholder="Ej: BC-2026-0001"
               class="input input-bordered font-mono"
               required
             />
           </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text font-semibold">Email *</span>
-            </label>
-            <input
-              type="email"
-              id="booking-email"
-              placeholder="tu@email.com"
-              class="input input-bordered"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">
+          <button type="submit" id="lookup-btn" class="btn btn-primary btn-block gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
             Buscar reserva
           </button>
         </form>
 
-        <!-- Result placeholder -->
+        <!-- Error State -->
+        <div id="booking-error" class="hidden mt-6">
+          <div class="divider"></div>
+          <div class="alert bg-error/10 border border-error/30 rounded-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-error shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span id="booking-error-msg" class="text-sm font-medium text-error">Reserva no encontrada.</span>
+          </div>
+        </div>
+
+        <!-- Result Card -->
         <div id="booking-result" class="hidden mt-6">
           <div class="divider"></div>
-          <div class="alert alert-info rounded-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>El sistema de consulta de reservas estará disponible próximamente. Mientras tanto, contáctanos por WhatsApp o email.</span>
+
+          <!-- Booking Number Badge -->
+          <div class="text-center mb-5">
+            <p class="text-xs text-base-content/50 uppercase tracking-widest mb-1">Número de Reserva</p>
+            <p id="res-number" class="text-2xl font-bold font-mono tracking-wider text-primary"></p>
+          </div>
+
+          <!-- Status + Item -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div>
+              <p class="text-xs text-base-content/50 mb-0.5">Servicio</p>
+              <p id="res-item" class="font-bold text-lg"></p>
+            </div>
+            <div class="flex gap-2">
+              <span id="res-status" class="badge badge-lg badge-warning"></span>
+              <span id="res-payment-status" class="badge badge-lg badge-outline"></span>
+            </div>
+          </div>
+
+          <!-- Details Grid -->
+          <div class="grid grid-cols-2 gap-4 text-sm mb-5">
+            <div>
+              <p class="text-base-content/50">Cliente</p>
+              <p id="res-name" class="font-semibold mt-0.5"></p>
+            </div>
+            <div>
+              <p class="text-base-content/50">Email</p>
+              <p id="res-email" class="font-semibold mt-0.5"></p>
+            </div>
+            <div>
+              <p class="text-base-content/50">Teléfono</p>
+              <p id="res-phone" class="font-semibold mt-0.5"></p>
+            </div>
+            <div>
+              <p class="text-base-content/50">Fecha</p>
+              <p id="res-date" class="font-semibold mt-0.5"></p>
+            </div>
+            <div>
+              <p class="text-base-content/50">Pasajeros / Huéspedes</p>
+              <p id="res-guests" class="font-semibold mt-0.5"></p>
+            </div>
+            <div>
+              <p class="text-base-content/50">Método de Pago</p>
+              <p id="res-payment" class="font-semibold mt-0.5 capitalize"></p>
+            </div>
+          </div>
+
+          <!-- Total -->
+          <div class="bg-base-200 rounded-2xl p-4 flex justify-between items-center">
+            <span class="text-sm text-base-content/60">Total de la reserva</span>
+            <span id="res-total" class="text-2xl font-bold price-gradient"></span>
           </div>
         </div>
       </div>
@@ -74,11 +126,100 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  const form = document.getElementById('lookup-form') as HTMLFormElement;
-  const result = document.getElementById('booking-result');
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000/api';
 
-  form?.addEventListener('submit', (e) => {
+  const form = document.getElementById('lookup-form') as HTMLFormElement;
+  const btn = document.getElementById('lookup-btn') as HTMLButtonElement;
+  const errorBox = document.getElementById('booking-error') as HTMLDivElement;
+  const errorMsg = document.getElementById('booking-error-msg') as HTMLSpanElement;
+  const resultBox = document.getElementById('booking-result') as HTMLDivElement;
+
+  function hide(...els: HTMLElement[]) { els.forEach(el => el.classList.add('hidden')); }
+  function show(...els: HTMLElement[]) { els.forEach(el => el.classList.remove('hidden')); }
+  function setText(id: string, text: string) { const el = document.getElementById(id); if (el) el.textContent = text; }
+
+  function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleDateString('es-MX', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    });
+  }
+
+  function statusLabel(status: string) {
+    const map: Record<string, string> = {
+      pending: 'Pendiente', confirmed: 'Confirmada', cancelled: 'Cancelada', completed: 'Completada',
+    };
+    return map[status] ?? status;
+  }
+
+  function paymentStatusLabel(status: string) {
+    const map: Record<string, string> = {
+      pending: 'Pago pendiente', paid: 'Pagado', refunded: 'Reembolsado', failed: 'Fallido',
+    };
+    return map[status] ?? status;
+  }
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    result?.classList.remove('hidden');
+    hide(errorBox, resultBox);
+
+    const numberInput = document.getElementById('booking-number') as HTMLInputElement;
+    const bookingNumber = numberInput.value.trim();
+    if (!bookingNumber) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Buscando...';
+
+    try {
+      const res = await fetch(`${API_URL}/bookings/${encodeURIComponent(bookingNumber)}`, {
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!res.ok) {
+        errorMsg.textContent = res.status === 404
+          ? 'No encontramos una reserva con ese número. Verifica e intenta de nuevo.'
+          : 'Error al consultar la reserva. Por favor intenta más tarde.';
+        show(errorBox);
+        return;
+      }
+
+      const json = await res.json();
+      const booking = json?.data ?? json;
+
+      // Populate fields
+      setText('res-number', booking.booking_number);
+      setText('res-item', booking.bookable?.name ?? `Servicio #${booking.bookable_id}`);
+      setText('res-name', booking.customer_name);
+      setText('res-email', booking.customer_email);
+      setText('res-phone', booking.customer_phone);
+      setText('res-date', formatDate(booking.start_date));
+      setText('res-guests', `${booking.adults} adulto${booking.adults !== 1 ? 's' : ''}${booking.children > 0 ? ` + ${booking.children} niño${booking.children !== 1 ? 's' : ''}` : ''}`);
+      setText('res-payment', booking.payment_method ?? 'No especificado');
+      setText('res-total', `$${Number(booking.total).toLocaleString('es-MX')} MXN`);
+
+      const statusEl = document.getElementById('res-status');
+      const paymentStatusEl = document.getElementById('res-payment-status');
+      if (statusEl) {
+        statusEl.textContent = statusLabel(booking.status);
+        statusEl.className = `badge badge-lg ${booking.status === 'confirmed' ? 'badge-success' : booking.status === 'cancelled' ? 'badge-error' : 'badge-warning'}`;
+      }
+      if (paymentStatusEl) {
+        paymentStatusEl.textContent = paymentStatusLabel(booking.payment_status);
+        paymentStatusEl.className = `badge badge-lg ${booking.payment_status === 'paid' ? 'badge-success badge-outline' : 'badge-outline'}`;
+      }
+
+      show(resultBox);
+    } catch {
+      errorMsg.textContent = 'No se pudo conectar con el servidor. Por favor intenta más tarde.';
+      show(errorBox);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Buscar reserva';
+    }
   });
+
+  // Auto-submit if booking number is pre-filled from URL param
+  const prefilled = (document.getElementById('booking-number') as HTMLInputElement)?.value;
+  if (prefilled) {
+    form?.dispatchEvent(new Event('submit'));
+  }
 </script>

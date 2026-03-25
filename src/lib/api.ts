@@ -7,7 +7,12 @@ async function fetchAPI(endpoint: string) {
     throw new Error(`API Error: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  // Handle various API response shapes: plain array, { data: [] }, { data: {} }, { results: [] }
+  if (Array.isArray(data)) return data;
+  if (data?.data !== undefined && data?.data !== null) return data.data;
+  if (Array.isArray(data?.results)) return data.results;
+  return data;
 }
 
 export interface Hotel {
@@ -79,6 +84,49 @@ export interface Banner {
   is_active: boolean;
 }
 
+export interface BookingPayload {
+  bookable_type: 'hotel' | 'tour' | 'transfer';
+  bookable_id: number;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  start_date: string;
+  end_date?: string | null;
+  pickup_time?: string | null;
+  adults: number;
+  children?: number;
+  payment_method: 'card' | 'paypal' | 'oxxo';
+  promo_code?: string | null;
+  special_requests?: string | null;
+  flight_number?: string | null;
+}
+
+export interface BookingResponse {
+  id: number;
+  booking_number: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  bookable_type: string;
+  bookable_id: number;
+  bookable?: { name: string; slug: string };
+  start_date: string;
+  end_date: string | null;
+  pickup_time: string | null;
+  adults: number;
+  children: number;
+  subtotal: number;
+  discount: number;
+  tax: number;
+  total: number;
+  status: string;
+  payment_status: string;
+  payment_method: string | null;
+  special_requests: string | null;
+  flight_number: string | null;
+  created_at: string;
+}
+
 // API Functions
 export const api = {
   // Hotels
@@ -123,5 +171,31 @@ export const api = {
   // Banners
   async getBanners(position: string = 'home'): Promise<Banner[]> {
     return fetchAPI(`/banners?position=${position}`);
+  },
+
+  // Bookings
+  async createBooking(payload: BookingPayload): Promise<BookingResponse> {
+    const response = await fetch(`${API_URL}/bookings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      const err: any = new Error(data.message || 'Error al crear la reserva');
+      err.errors = data.errors;
+      err.status = response.status;
+      throw err;
+    }
+    return data?.data ?? data;
+  },
+
+  async getBooking(bookingNumber: string): Promise<BookingResponse> {
+    const response = await fetch(`${API_URL}/bookings/${bookingNumber}`, {
+      headers: { 'Accept': 'application/json' },
+    });
+    if (!response.ok) throw new Error('Reserva no encontrada');
+    const data = await response.json();
+    return data?.data ?? data;
   },
 };

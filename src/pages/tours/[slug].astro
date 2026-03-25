@@ -1,48 +1,25 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
-import { api, type Tour } from '../../lib/api';
+import { api } from '../../lib/api';
 
-export async function getStaticPaths() {
-  // Datos de ejemplo para el build estático
-  const sampleTours = [
-    {
-      slug: 'chichen-itza-tour-completo',
-      name: 'Chichén Itzá Tour Completo',
-      description: 'Explora la maravilla del mundo Maya con guía experto',
-      highlights: 'Visita al Castillo, El Cenote Sagrado y el Juego de Pelota',
-      destination: 'Chichén Itzá',
-      duration: '12 horas',
-      max_people: 25,
-      price_adult: 1800,
-      price_child: 900,
-      included: ['Transporte', 'Guía bilingüe', 'Entrada', 'Almuerzo'],
-      not_included: ['Propinas', 'Souvenirs'],
-      meeting_point: 'Hotel de tu preferencia',
-      difficulty_level: 'moderate',
-      is_active: true,
-      featured: true,
-      latitude: 20.6843,
-      longitude: -88.5678
-    }
-  ];
+const { slug } = Astro.params;
 
-  return sampleTours.map((tour) => ({
-    params: { slug: tour.slug },
-    props: { tour },
-  }));
+let tour;
+try {
+  tour = await api.getTour(slug!);
+} catch {
+  return Astro.redirect('/tours');
 }
-
-const { tour } = Astro.props;
 
 const included = (() => {
   try { return tour.included ? JSON.parse(tour.included as unknown as string) : []; }
-  catch { return tour.included || []; }
+  catch { return Array.isArray(tour.included) ? tour.included : []; }
 })();
 
 const notIncluded = (() => {
   try { return tour.not_included ? JSON.parse(tour.not_included as unknown as string) : []; }
-  catch { return tour.not_included || []; }
+  catch { return Array.isArray(tour.not_included) ? tour.not_included : []; }
 })();
 
 const difficultyLabel = tour.difficulty_level === 'easy' ? 'Fácil' : tour.difficulty_level === 'moderate' ? 'Moderado' : 'Difícil';
@@ -131,7 +108,7 @@ const tourSchema = {
 
         <!-- Image -->
         <div class="reveal-up delay-100 h-72 md:h-96 rounded-2xl overflow-hidden relative">
-          <div class="absolute inset-0 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600"></div>
+          <div class="absolute inset-0 bg-linear-to-br from-emerald-400 via-teal-500 to-cyan-600"></div>
           <div class="absolute inset-0 flex flex-col items-center justify-center text-white/25">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -245,6 +222,7 @@ const tourSchema = {
               <BookingForm
                 client:load
                 itemType="tour"
+                itemId={tour.id}
                 itemName={tour.name}
                 itemPrice={tour.price_adult}
                 itemSlug={tour.slug}
@@ -254,7 +232,7 @@ const tourSchema = {
               <div class="divider my-3"></div>
 
               <a
-                href="https://wa.me/529981234567?text=Hola,%20me%20interesa%20el%20tour%20${encodeURIComponent(tour.name)}"
+                href={`https://wa.me/529981234567?text=${encodeURIComponent(`Hola, me interesa el tour: ${tour.name}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="btn btn-sm bg-green-500 hover:bg-green-600 border-0 text-white w-full gap-2"
@@ -294,9 +272,7 @@ const tourSchema = {
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-2xl font-bold mb-2">Más tours en {tour.destination}</h2>
       <p class="text-base-content/60 mb-6">Descubre otras experiencias únicas en el Caribe Mexicano</p>
-      <a href="/tours" class="btn btn-primary btn-lg">
-        Ver todos los tours
-      </a>
+      <a href="/tours" class="btn btn-primary btn-lg">Ver todos los tours</a>
     </div>
   </section>
 </Layout>

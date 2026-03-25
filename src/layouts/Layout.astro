@@ -453,6 +453,9 @@ const allSchemas = [
       </div>
     </footer>
 
+    <!-- ===== Scroll Progress Bar ===== -->
+    <div id="scroll-progress" aria-hidden="true"></div>
+
     <!-- ===== WhatsApp Floating Button ===== -->
     <a
       id="whatsapp-btn"
@@ -517,6 +520,37 @@ const allSchemas = [
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll(); // run once on load
       }
+
+      // ── Scroll Progress Bar ──
+      const progressBar = document.getElementById('scroll-progress');
+      if (progressBar) {
+        window.addEventListener('scroll', () => {
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          progressBar.style.width = `${Math.min(progress, 100)}%`;
+        }, { passive: true });
+      }
+
+      // ── Active Nav Link Highlight ──
+      const currentPath = window.location.pathname;
+      document.querySelectorAll<HTMLAnchorElement>('nav a[href]').forEach(link => {
+        const linkPath = new URL(link.href, window.location.origin).pathname;
+        if (linkPath !== '/' && currentPath.startsWith(linkPath)) {
+          link.classList.add('nav-link-active');
+        }
+      });
+
+      // ── Mobile Menu: close on outside click ──
+      document.addEventListener('click', (e) => {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+          if (!dropdown.contains(e.target as Node)) {
+            const btn = dropdown.querySelector('[tabindex="0"]') as HTMLElement;
+            btn?.blur();
+          }
+        });
+      });
     </script>
   </body>
 </html>

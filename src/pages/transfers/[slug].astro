@@ -1,39 +1,20 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
-import { api, type Transfer } from '../../lib/api';
+import { api } from '../../lib/api';
 
-export async function getStaticPaths() {
-  // Datos de ejemplo para el build estático
-  const sampleTransfers = [
-    {
-      slug: 'aeropuerto-cancun-playa-del-carmen',
-      name: 'Transfer Aeropuerto Cancún - Playa del Carmen',
-      description: 'Transporte privado del aeropuerto a tu hotel',
-      from_location: 'Aeropuerto Internacional de Cancún',
-      to_location: 'Playa del Carmen',
-      type: 'privado',
-      vehicle_type: 'SUV',
-      max_passengers: 8,
-      price: 1200,
-      is_private: true,
-      features: ['Aire acondicionado', 'Agua embotellada', 'WiFi'],
-      is_active: true,
-      featured: true
-    }
-  ];
+const { slug } = Astro.params;
 
-  return sampleTransfers.map((transfer) => ({
-    params: { slug: transfer.slug },
-    props: { transfer },
-  }));
+let transfer;
+try {
+  transfer = await api.getTransfer(slug!);
+} catch {
+  return Astro.redirect('/transfers');
 }
-
-const { transfer } = Astro.props;
 
 const features = (() => {
   try { return transfer.features ? JSON.parse(transfer.features as unknown as string) : []; }
-  catch { return transfer.features || []; }
+  catch { return Array.isArray(transfer.features) ? transfer.features : []; }
 })();
 
 const transferSchema = {
@@ -105,7 +86,7 @@ const transferSchema = {
         </div>
 
         <!-- Route Card -->
-        <div class="reveal-up delay-100 card bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 shadow-sm">
+        <div class="reveal-up delay-100 card bg-linear-to-br from-orange-50 to-amber-50 border border-orange-100 shadow-sm">
           <div class="card-body p-6">
             <h2 class="text-xl font-bold mb-6">Ruta del Traslado</h2>
             <div class="flex items-stretch gap-4">
@@ -246,6 +227,7 @@ const transferSchema = {
               <BookingForm
                 client:load
                 itemType="transfer"
+                itemId={transfer.id}
                 itemName={transfer.name}
                 itemPrice={transfer.price}
                 itemSlug={transfer.slug}
