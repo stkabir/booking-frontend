@@ -14,66 +14,86 @@ const contactSchema = {
   description="Contáctanos para información sobre tours, hoteles y traslados en Cancún, Riviera Maya y el Caribe Mexicano. Respondemos en menos de 24 horas."
   keywords="contacto booking caribe, contactar agencia cancun, ayuda tours cancun, whatsapp cancun tours"
   schema={contactSchema}
-  transparent={true}
 >
-  <!-- Hero -->
-  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #0A1628 0%, #0891b2 100%);">
-    <div class="container mx-auto px-4 pt-28 pb-20 relative z-10 text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Estamos aquí para ayudarte</h1>
-      <p class="text-xl text-white/70 max-w-xl mx-auto">
+  <!-- ===== HERO HEADER ===== -->
+  <div class="relative bg-base-100 border-b-2 border-neutral/8 overflow-hidden py-16 pattern-dots-light">
+    <!-- Geometric decorations -->
+    <div class="absolute top-6 right-24 w-20 h-20 rounded-full bg-primary/15 border-2 border-primary/25" aria-hidden="true"></div>
+    <div class="absolute top-12 right-12 w-8 h-8 bg-accent/30 border-2 border-accent/40 rotate-12" aria-hidden="true"></div>
+    <div class="absolute bottom-4 left-16 w-12 h-12 bg-secondary/20 border-2 border-secondary/30 rounded-full" aria-hidden="true"></div>
+    <div class="absolute bottom-8 left-36 w-5 h-5 bg-primary/30 border-2 border-primary/40 rotate-45" aria-hidden="true"></div>
+
+    <div class="container mx-auto px-4 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 bg-primary/10 text-primary border-2 border-primary/25 rounded-full px-4 py-1.5 text-sm font-black mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Atención 24/7
+      </div>
+      <h1 class="font-['Outfit'] text-4xl md:text-5xl font-black text-neutral mb-4 leading-tight">
+        Estamos aquí <span class="price-gradient">para ayudarte</span>
+      </h1>
+      <p class="text-lg text-neutral/60 max-w-xl mx-auto">
         ¿Tienes preguntas sobre tours, hoteles o traslados? Escríbenos y respondemos en menos de 24 horas.
       </p>
     </div>
-    <div class="overflow-hidden" aria-hidden="true">
-      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
-        <path fill="#fffbf7" d="M0,30 C360,60 720,10 1440,35 L1440,50 L0,50 Z"/>
-      </svg>
-    </div>
   </div>
 
+  <!-- ===== CONTENT ===== -->
   <div class="container mx-auto px-4 py-16 max-w-5xl">
     <div class="grid md:grid-cols-2 gap-12">
 
-      <!-- Contact Form -->
+      <!-- ── Contact Form ── -->
       <div class="reveal-left">
-        <h2 class="text-2xl font-bold mb-6">Envíanos un mensaje</h2>
-        <form
-          id="contact-form"
-          class="space-y-5"
-          novalidate
-        >
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Nombre completo *</span></label>
+        <h2 class="text-2xl font-black text-neutral mb-6">Envíanos un mensaje</h2>
+        <form id="contact-form" class="space-y-5" novalidate>
+
+          <div>
+            <label for="cf-name" class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">
+              Nombre completo *
+            </label>
             <input
               type="text"
+              id="cf-name"
               name="name"
               placeholder="Tu nombre"
-              class="input input-bordered"
+              class="pg-input w-full"
               required
             />
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Email *</span></label>
+
+          <div>
+            <label for="cf-email" class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">
+              Email *
+            </label>
             <input
               type="email"
+              id="cf-email"
               name="email"
               placeholder="tu@email.com"
-              class="input input-bordered"
+              class="pg-input w-full"
               required
             />
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Teléfono / WhatsApp</span></label>
+
+          <div>
+            <label for="cf-phone" class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">
+              Teléfono / WhatsApp
+            </label>
             <input
               type="tel"
+              id="cf-phone"
               name="phone"
               placeholder="+52 998 123 4567"
-              class="input input-bordered"
+              class="pg-input w-full"
             />
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Asunto *</span></label>
-            <select name="subject" class="select select-bordered" required>
+
+          <div>
+            <label for="cf-subject" class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">
+              Asunto *
+            </label>
+            <select id="cf-subject" name="subject" class="pg-select w-full" required>
               <option value="">Selecciona un tema</option>
               <option value="tours">Información sobre Tours</option>
               <option value="hotels">Información sobre Hoteles</option>
@@ -83,35 +103,44 @@ const contactSchema = {
               <option value="other">Otro</option>
             </select>
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Mensaje *</span></label>
+
+          <div>
+            <label for="cf-message" class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">
+              Mensaje *
+            </label>
             <textarea
+              id="cf-message"
               name="message"
               placeholder="¿En qué podemos ayudarte?"
-              class="textarea textarea-bordered min-h-[120px]"
+              class="pg-textarea w-full min-h-[120px]"
               required
             ></textarea>
           </div>
+
           <button
             type="submit"
             id="contact-submit"
-            class="btn btn-primary btn-block btn-lg"
+            class="w-full h-12 bg-violet-500 text-white font-black text-base rounded-full border-2 border-neutral shadow-[3px_3px_0px_0px_#1E293B] hover:translate-x-px hover:translate-y-px hover:shadow-[2px_2px_0px_0px_#1E293B] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-x-0 disabled:translate-y-0"
           >
             Enviar mensaje
           </button>
-          <div id="contact-success" class="hidden alert alert-success rounded-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>¡Mensaje enviado! Te contactaremos pronto.</span>
+
+          <div id="contact-success" class="hidden items-center gap-3 bg-green-50 border-2 border-green-300 text-green-800 rounded-2xl px-4 py-3.5">
+            <div class="w-8 h-8 rounded-full bg-green-500 border-2 border-green-700 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span class="font-semibold text-sm">¡Mensaje enviado! Te contactaremos pronto.</span>
           </div>
+
         </form>
       </div>
 
-      <!-- Contact Info -->
+      <!-- ── Contact Info ── -->
       <div class="reveal-right space-y-8">
         <div>
-          <h2 class="text-2xl font-bold mb-6">Información de contacto</h2>
+          <h2 class="text-2xl font-black text-neutral mb-6">Información de contacto</h2>
           <div class="space-y-5">
             {[
               {
@@ -138,17 +167,17 @@ const contactSchema = {
               },
             ].map(({ icon, label, value, href }) => (
               <div class="flex items-start gap-4">
-                <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={icon} />
                   </svg>
                 </div>
                 <div>
-                  <p class="text-xs text-base-content/50 uppercase tracking-wide">{label}</p>
+                  <p class="text-xs text-neutral/50 uppercase tracking-wide font-bold mb-0.5">{label}</p>
                   {href ? (
-                    <a href={href} class="font-semibold hover:text-primary transition-colors">{value}</a>
+                    <a href={href} class="font-semibold text-neutral hover:text-primary transition-colors">{value}</a>
                   ) : (
-                    <p class="font-semibold">{value}</p>
+                    <p class="font-semibold text-neutral">{value}</p>
                   )}
                 </div>
               </div>
@@ -157,23 +186,23 @@ const contactSchema = {
         </div>
 
         <!-- WhatsApp Card -->
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6">
+        <div class="bg-white border-2 border-neutral shadow-pop rounded-2xl p-6">
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-green-500 flex items-center justify-center shrink-0">
+            <div class="w-12 h-12 rounded-2xl bg-green-500 border-2 border-neutral shadow-pop-sm flex items-center justify-center shrink-0">
               <svg class="h-6 w-6 fill-white" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
               </svg>
             </div>
             <div>
-              <h3 class="font-bold text-lg">Chat por WhatsApp</h3>
-              <p class="text-sm text-base-content/65 mt-1 mb-3">
+              <h3 class="font-black text-lg text-neutral">Chat por WhatsApp</h3>
+              <p class="text-sm text-neutral/60 mt-1 mb-4">
                 ¿Necesitas respuesta rápida? Escríbenos por WhatsApp y te respondemos en minutos.
               </p>
               <a
                 href="https://wa.me/529981234567?text=Hola,%20necesito%20información%20sobre%20tours%20en%20Cancún"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="btn btn-sm bg-green-500 hover:bg-green-600 border-0 text-white gap-2"
+                class="inline-flex items-center gap-2 h-9 px-5 text-sm font-bold rounded-full bg-green-500 text-white border-2 border-neutral shadow-pop-sm hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all"
               >
                 Iniciar chat →
               </a>
@@ -182,13 +211,16 @@ const contactSchema = {
         </div>
 
         <!-- Response Time -->
-        <div class="alert bg-info/8 border border-info/20 rounded-2xl">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-info shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p class="text-sm">Tiempo de respuesta promedio: <strong>&lt; 2 horas</strong></p>
+        <div class="flex items-center gap-3 bg-sky-50 border-2 border-sky-200 text-sky-800 rounded-2xl px-4 py-3.5">
+          <div class="w-8 h-8 rounded-lg bg-sky-500 border-2 border-sky-700 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p class="text-sm font-medium">Tiempo de respuesta promedio: <strong>&lt; 2 horas</strong></p>
         </div>
       </div>
+
     </div>
   </div>
 </Layout>
@@ -215,7 +247,11 @@ const contactSchema = {
     submitBtn.textContent = 'Enviar mensaje';
     submitBtn.disabled = false;
     successMsg?.classList.remove('hidden');
+    successMsg?.classList.add('flex');
 
-    setTimeout(() => successMsg?.classList.add('hidden'), 5000);
+    setTimeout(() => {
+      successMsg?.classList.add('hidden');
+      successMsg?.classList.remove('flex');
+    }, 5000);
   });
 </script>

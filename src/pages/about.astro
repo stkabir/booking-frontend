@@ -6,112 +6,167 @@ import Layout from '../layouts/Layout.astro';
   title="Sobre Nosotros - Booking Caribe"
   description="Conoce a Booking Caribe, tu agencia de confianza para tours, hoteles y traslados en el Caribe Mexicano. Cancún, Riviera Maya, Tulum y más."
   keywords="booking caribe nosotros, agencia turismo cancun, sobre booking caribe, quien somos"
-  transparent={true}
 >
-  <!-- Hero -->
-  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);">
-    <div class="container mx-auto px-4 pt-32 pb-20 relative z-10 text-center">
-      <p class="text-primary-content/60 text-sm font-bold uppercase tracking-widest mb-4">Sobre Nosotros</p>
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-        Tu viaje,<br/>
-        <span class="font-display italic text-cyan-200">nuestra pasión</span>
+  <!-- ===== HERO HEADER ===== -->
+  <div class="relative bg-base-100 border-b-2 border-neutral/8 overflow-hidden py-20 pattern-dots-light">
+    <!-- Geometric decorations -->
+    <div class="absolute -top-10 right-0 w-64 h-64 rounded-full bg-primary/15 border-2 border-primary/20 translate-x-1/3" aria-hidden="true"></div>
+    <div class="absolute top-16 right-20 w-14 h-14 bg-accent/35 border-2 border-accent/50 rotate-12 hidden md:block" aria-hidden="true"></div>
+    <div class="absolute top-28 right-8 w-9 h-9 rounded-full bg-secondary/40 border-2 border-secondary/60 hidden lg:block" aria-hidden="true"></div>
+    <div class="absolute bottom-6 left-16 w-20 h-20 rounded-full bg-secondary/15 border-2 border-secondary/25 hidden md:block" aria-hidden="true"></div>
+    <div class="absolute top-20 left-1/4 text-xl hidden lg:block select-none text-primary/30" aria-hidden="true">✦</div>
+    <div class="absolute bottom-14 left-1/3 text-2xl hidden lg:block select-none text-secondary/40" aria-hidden="true">◆</div>
+
+    <div class="container mx-auto px-4 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 bg-primary/10 text-primary border-2 border-primary/25 rounded-full px-4 py-1.5 text-sm font-black mb-6 uppercase tracking-wider">
+        🌴 Sobre Nosotros
+      </div>
+      <h1 class="font-['Outfit'] text-5xl md:text-7xl font-black text-neutral mb-5 leading-tight">
+        Tu viaje,<br>
+        <span class="price-gradient">nuestra pasión</span>
       </h1>
-      <p class="text-xl text-white/70 max-w-2xl mx-auto">
+      <p class="text-xl text-neutral/60 max-w-2xl mx-auto leading-relaxed">
         Somos una empresa mexicana dedicada a crear experiencias de viaje inolvidables en el Caribe Mexicano.
       </p>
     </div>
-    <div class="overflow-hidden" aria-hidden="true">
-      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
-        <path fill="#fffbf7" d="M0,25 C480,55 960,0 1440,30 L1440,50 L0,50 Z"/>
-      </svg>
-    </div>
   </div>
 
-  <div class="container mx-auto px-4 py-16 max-w-5xl">
+  <!-- ===== CONTENT ===== -->
+  <div class="container mx-auto px-4 py-20 max-w-5xl">
 
-    <!-- Mission -->
-    <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
+    <!-- ── Mission ── -->
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-24">
       <div class="reveal-left">
-        <p class="text-sm font-bold uppercase tracking-widest text-primary mb-3">Nuestra Misión</p>
-        <h2 class="text-3xl font-bold mb-4">Hacer el Caribe accesible para todos</h2>
-        <p class="text-base-content/70 leading-relaxed mb-4">
+        <div class="inline-flex items-center gap-2 bg-primary/10 text-primary border-2 border-primary/20 rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider mb-5">
+          Nuestra Misión
+        </div>
+        <h2 class="text-3xl md:text-4xl font-black text-neutral mb-5 leading-tight">
+          Hacer el Caribe accesible para todos
+        </h2>
+        <p class="text-neutral/65 leading-relaxed mb-4 text-lg">
           En Booking Caribe creemos que cada viajero merece vivir la magia del Caribe Mexicano sin complicaciones. Por eso reunimos en un solo lugar los mejores tours, hoteles y traslados de la Riviera Maya.
         </p>
-        <p class="text-base-content/70 leading-relaxed">
+        <p class="text-neutral/65 leading-relaxed text-lg">
           Desde Cancún hasta Tulum, pasando por Cozumel, Chichén Itzá e Isla Mujeres — somos tu guía local para descubrir este paraíso.
         </p>
       </div>
-      <div class="reveal-right h-64 rounded-2xl overflow-hidden">
-        <div class="h-full bg-gradient-to-br from-cyan-400 to-teal-600 flex items-center justify-center">
-          <span class="text-8xl" aria-hidden="true">🌴</span>
+
+      <!-- Illustrated card with hard-shadow decoration -->
+      <div class="reveal-right relative">
+        <div class="relative">
+          <!-- Shadow layer -->
+          <div class="absolute top-4 left-4 w-full h-72 bg-primary/20 border-2 border-primary/25 rounded-2xl" aria-hidden="true"></div>
+          <!-- Main card -->
+          <div class="relative h-72 bg-violet-50 border-2 border-neutral shadow-pop-lg rounded-2xl flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 pattern-dots-light opacity-40" aria-hidden="true"></div>
+            <!-- Floating shapes inside -->
+            <div class="absolute top-4 right-4 w-16 h-16 rounded-full bg-primary/20 border-2 border-primary/30" aria-hidden="true"></div>
+            <div class="absolute bottom-5 left-5 w-10 h-10 bg-secondary/25 border-2 border-secondary/35 rotate-12" aria-hidden="true"></div>
+            <div class="absolute bottom-4 right-10 w-7 h-7 rounded-full bg-accent/40 border-2 border-accent/50" aria-hidden="true"></div>
+            <span class="text-8xl relative z-10 drop-shadow-sm" aria-hidden="true">🌴</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Values -->
-    <div class="mb-20">
-      <div class="text-center mb-10">
-        <p class="reveal-up text-sm font-bold uppercase tracking-widest text-primary mb-3">Nuestros Valores</p>
-        <h2 class="reveal-up delay-100 text-3xl font-bold">Lo que nos define</h2>
+    <!-- ── Values ── -->
+    <div class="mb-24">
+      <div class="text-center mb-12">
+        <div class="reveal-up inline-flex items-center gap-2 bg-secondary/10 text-secondary border-2 border-secondary/20 rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider mb-4">
+          Nuestros Valores
+        </div>
+        <h2 class="reveal-up delay-100 text-3xl md:text-4xl font-black text-neutral">Lo que nos define</h2>
       </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { icon: '🤝', title: 'Confianza', desc: 'Transparencia total en precios y servicios. Sin costos ocultos.' },
-          { icon: '⭐', title: 'Calidad', desc: 'Seleccionamos solo los mejores proveedores y experiencias.' },
-          { icon: '💚', title: 'Responsabilidad', desc: 'Turismo sostenible que respeta el medio ambiente y las comunidades.' },
-          { icon: '❤️', title: 'Pasión', desc: 'Amamos el Caribe y queremos compartir esa pasión contigo.' },
-        ].map(({ icon, title, desc }, i) => (
-          <div class={`reveal-up delay-${(i + 1) * 100} text-center p-6 bg-base-200 rounded-2xl`}>
-            <div class="text-4xl mb-3" aria-hidden="true">{icon}</div>
-            <h3 class="font-bold text-lg mb-2">{title}</h3>
-            <p class="text-sm text-base-content/65 leading-relaxed">{desc}</p>
+          { icon: '🤝', title: 'Confianza',         desc: 'Transparencia total en precios y servicios. Sin costos ocultos.',                                  bg: 'bg-violet-100', border: 'border-violet-300', shadow: 'shadow-[2px_2px_0px_0px_#8B5CF6]' },
+          { icon: '⭐', title: 'Calidad',            desc: 'Seleccionamos solo los mejores proveedores y experiencias.',                                        bg: 'bg-amber-100',  border: 'border-amber-300',  shadow: 'shadow-[2px_2px_0px_0px_#FBBF24]' },
+          { icon: '💚', title: 'Responsabilidad',   desc: 'Turismo sostenible que respeta el medio ambiente y las comunidades.',                               bg: 'bg-emerald-100',border: 'border-emerald-400', shadow: 'shadow-[2px_2px_0px_0px_#10B981]' },
+          { icon: '❤️', title: 'Pasión',             desc: 'Amamos el Caribe y queremos compartir esa pasión contigo.',                                         bg: 'bg-pink-100',   border: 'border-pink-300',   shadow: 'shadow-[2px_2px_0px_0px_#F472B6]' },
+        ].map(({ icon, title, desc, bg, border, shadow }, i) => (
+          <div class={`reveal-up delay-${(i + 1) * 100} bg-white border-2 border-neutral shadow-pop rounded-2xl p-6 text-center card-sticker`}>
+            <div class={`w-14 h-14 rounded-2xl border-2 ${border} ${shadow} ${bg} flex items-center justify-center text-3xl mx-auto mb-4`}>
+              {icon}
+            </div>
+            <h3 class="font-black text-lg text-neutral mb-2">{title}</h3>
+            <p class="text-sm text-neutral/60 leading-relaxed">{desc}</p>
           </div>
         ))}
       </div>
     </div>
 
-    <!-- Stats -->
-    <div class="bg-neutral rounded-3xl p-10 mb-20 reveal-scale">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+    <!-- ── Stats — Amber Playful Geometric band ── -->
+    <div class="relative bg-amber-400 border-2 border-neutral shadow-pop-lg rounded-3xl p-10 mb-24 reveal-scale overflow-hidden">
+      <!-- Pattern overlay -->
+      <div class="absolute inset-0 pattern-dots opacity-10" aria-hidden="true"></div>
+      <!-- Decorations -->
+      <div class="absolute top-4 right-10 w-16 h-16 rounded-full bg-neutral/10 border-2 border-neutral/15" aria-hidden="true"></div>
+      <div class="absolute bottom-5 left-8 w-10 h-10 bg-neutral/10 border-2 border-neutral/15 rotate-12" aria-hidden="true"></div>
+      <div class="absolute top-12 left-1/2 w-6 h-6 rounded-full bg-white/20 border border-white/30 hidden md:block" aria-hidden="true"></div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center relative z-10">
         {[
-          { num: '5,000+', label: 'Viajeros satisfechos' },
-          { num: '200+', label: 'Tours disponibles' },
-          { num: '7', label: 'Años de experiencia' },
-          { num: '4.9⭐', label: 'Calificación promedio' },
-        ].map(({ num, label }) => (
+          { num: '5,000+', label: 'Viajeros satisfechos', icon: '😊' },
+          { num: '200+',   label: 'Tours disponibles',    icon: '🌴' },
+          { num: '7',      label: 'Años de experiencia',  icon: '📅' },
+          { num: '4.9',    label: 'Calificación promedio',icon: '⭐' },
+        ].map(({ num, label, icon }) => (
           <div>
-            <p class="text-3xl font-bold text-primary">{num}</p>
-            <p class="text-neutral-content/60 text-sm mt-1">{label}</p>
+            <div class="text-2xl mb-1" aria-hidden="true">{icon}</div>
+            <p class="text-4xl md:text-5xl font-black text-neutral leading-none">{num}</p>
+            <p class="text-neutral/65 text-sm mt-2 font-semibold">{label}</p>
           </div>
         ))}
       </div>
     </div>
 
-    <!-- Destinations -->
-    <div class="mb-20">
-      <div class="text-center mb-10">
-        <h2 class="reveal-up text-3xl font-bold">Nuestros Destinos</h2>
-        <p class="reveal-up delay-100 text-base-content/60 mt-2">Expertos en el Caribe Mexicano</p>
+    <!-- ── Destinations ── -->
+    <div class="mb-24">
+      <div class="text-center mb-12">
+        <h2 class="reveal-up text-3xl md:text-4xl font-black text-neutral">Nuestros Destinos</h2>
+        <p class="reveal-up delay-100 text-neutral/60 mt-2 text-lg">Expertos en el Caribe Mexicano</p>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          'Cancún', 'Playa del Carmen', 'Tulum', 'Cozumel',
-          'Isla Mujeres', 'Chichén Itzá', 'Bacalar', 'Holbox',
-        ].map((dest, i) => (
-          <div class={`reveal-up delay-${Math.min((i % 4 + 1) * 100, 400)} bg-base-200 rounded-2xl p-4 text-center hover:bg-primary/10 transition-colors cursor-default`}>
-            <p class="font-semibold">{dest}</p>
+          { dest: 'Cancún',          bg: 'bg-violet-100',  border: 'border-violet-300',  text: 'text-violet-700'  },
+          { dest: 'Playa del Carmen',bg: 'bg-pink-100',    border: 'border-pink-300',    text: 'text-pink-700'    },
+          { dest: 'Tulum',           bg: 'bg-emerald-100', border: 'border-emerald-300', text: 'text-emerald-700' },
+          { dest: 'Cozumel',         bg: 'bg-amber-100',   border: 'border-amber-300',   text: 'text-amber-700'   },
+          { dest: 'Isla Mujeres',    bg: 'bg-sky-100',     border: 'border-sky-300',     text: 'text-sky-700'     },
+          { dest: 'Chichén Itzá',    bg: 'bg-violet-100',  border: 'border-violet-300',  text: 'text-violet-700'  },
+          { dest: 'Bacalar',         bg: 'bg-teal-100',    border: 'border-teal-300',    text: 'text-teal-700'    },
+          { dest: 'Holbox',          bg: 'bg-pink-100',    border: 'border-pink-300',    text: 'text-pink-700'    },
+        ].map(({ dest, bg, border, text }, i) => (
+          <div class={`reveal-up delay-${Math.min((i % 4 + 1) * 100, 400)} ${bg} border-2 ${border} shadow-pop-sm rounded-2xl p-4 text-center hover:shadow-pop hover:-translate-x-px hover:-translate-y-px transition-all cursor-default`}>
+            <p class={`font-black text-sm md:text-base ${text}`}>{dest}</p>
           </div>
         ))}
       </div>
     </div>
 
-    <!-- CTA -->
-    <div class="text-center reveal-up">
-      <h2 class="text-3xl font-bold mb-4">¿Listo para tu próxima aventura?</h2>
-      <p class="text-base-content/60 mb-8">Estamos aquí para hacer de tu viaje una experiencia perfecta.</p>
-      <div class="flex flex-wrap justify-center gap-4">
-        <a href="/tours" class="btn btn-primary btn-lg">Explorar Tours</a>
-        <a href="/contact" class="btn btn-outline btn-lg">Contáctanos</a>
+    <!-- ── CTA ── -->
+    <div class="relative text-center reveal-up bg-white border-2 border-neutral shadow-pop-lg rounded-3xl px-8 py-14 overflow-hidden">
+      <!-- Background pattern -->
+      <div class="absolute inset-0 pattern-dots-light opacity-40" aria-hidden="true"></div>
+      <!-- Decorations -->
+      <div class="absolute top-4 left-8 w-12 h-12 rounded-full bg-primary/15 border-2 border-primary/20" aria-hidden="true"></div>
+      <div class="absolute top-6 right-10 w-8 h-8 bg-accent/30 border-2 border-accent/40 rotate-12" aria-hidden="true"></div>
+      <div class="absolute bottom-4 right-8 w-16 h-16 rounded-full bg-secondary/15 border-2 border-secondary/20" aria-hidden="true"></div>
+      <div class="absolute bottom-6 left-12 w-6 h-6 rounded-full bg-secondary/30 border-2 border-secondary/40" aria-hidden="true"></div>
+
+      <div class="relative z-10">
+        <h2 class="text-3xl md:text-4xl font-black text-neutral mb-4">¿Listo para tu próxima aventura?</h2>
+        <p class="text-neutral/60 mb-8 text-lg max-w-md mx-auto">Estamos aquí para hacer de tu viaje una experiencia perfecta.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/tours" class="inline-flex items-center gap-2 h-12 px-7 text-base font-bold rounded-full bg-violet-500 text-white border-2 border-neutral shadow-pop hover:translate-x-px hover:translate-y-px hover:shadow-pop-sm active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all">
+            Explorar Tours
+          </a>
+          <a href="/contact" class="inline-flex items-center h-12 px-7 text-base font-bold rounded-full bg-transparent text-neutral border-2 border-neutral shadow-pop hover:translate-x-px hover:translate-y-px hover:shadow-pop-sm active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all">
+            Contáctanos
+          </a>
+        </div>
       </div>
     </div>
 

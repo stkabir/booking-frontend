@@ -9,68 +9,89 @@ const transfers = await api.getTransfers().catch(() => []);
   title="Traslados Aeropuerto Cancún - Privados y Compartidos"
   description="Traslados privados y compartidos desde el Aeropuerto de Cancún a Playa del Carmen, Tulum, Riviera Maya y más. Reserva tu transfer al mejor precio."
   keywords="traslado aeropuerto cancun, transfer cancun hotel, traslado privado cancun, traslado playa del carmen, traslado tulum, transporte cancun aeropuerto, transfer riviera maya"
-  transparent={true}
 >
-  <!-- Page Header -->
-  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 50%, #9a3412 100%);">
-    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-      <div class="absolute top-0 left-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/2 -translate-x-1/2"></div>
-      <div class="absolute bottom-0 right-1/4 w-56 h-56 rounded-full bg-orange-300/8"></div>
-    </div>
-    <div class="container mx-auto px-4 pt-28 pb-20 relative z-10">
-      <nav aria-label="Breadcrumb" class="text-white/60 text-sm mb-6 flex items-center gap-2">
-        <a href="/" class="hover:text-white transition-colors">Inicio</a>
-        <span>/</span>
-        <span class="text-white font-medium">Traslados</span>
+  <!-- ══════════════════════════════════════════
+       PAGE HEADER — Playful Geometric
+  ══════════════════════════════════════════ -->
+  <section class="relative overflow-hidden bg-base-100" aria-label="Traslados">
+    <!-- Dot grid -->
+    <div class="absolute inset-0 pattern-dots-light opacity-50" aria-hidden="true"></div>
+    <!-- Decorative shapes -->
+    <div class="absolute -top-12 right-0 w-72 h-72 rounded-full bg-sky-500/20 border-2 border-sky-600/15 translate-x-1/4" aria-hidden="true"></div>
+    <div class="absolute top-20 right-28 w-14 h-14 bg-accent border-2 border-neutral rotate-45 hidden md:block" aria-hidden="true"></div>
+    <div class="absolute top-36 right-12 w-9 h-9 rounded-full bg-sky-500 border-2 border-neutral hidden lg:block" aria-hidden="true"></div>
+    <div class="absolute bottom-8 left-12 w-20 h-20 rounded-full bg-sky-500/15 border-2 border-sky-600/20 hidden md:block" aria-hidden="true"></div>
+    <div class="absolute bottom-12 left-1/3 text-2xl hidden lg:block select-none text-primary/50" aria-hidden="true">✦</div>
+    <div class="absolute top-24 left-1/4 text-xl hidden lg:block select-none text-accent" aria-hidden="true">★</div>
+
+    <div class="container mx-auto px-4 pt-28 pb-14 relative z-10">
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm font-semibold text-neutral/45 mb-6">
+        <a href="/" class="hover:text-sky-600 transition-colors">Inicio</a>
+        <span>›</span>
+        <span class="text-neutral">Traslados</span>
       </nav>
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
-        Traslados desde el<br/>
-        <span class="text-amber-200">Aeropuerto de Cancún</span>
+
+      <!-- Category chip -->
+      <div class="inline-flex items-center gap-2 bg-sky-500 border-2 border-neutral shadow-pop-sm rounded-full px-4 py-1 text-white text-xs font-black uppercase tracking-widest mb-5">
+        🚐 Traslados
+      </div>
+
+      <h1 class="text-5xl md:text-7xl font-black text-neutral leading-none tracking-tighter mb-5">
+        Traslados desde el<br>
+        <span class="text-sky-500">Aeropuerto de Cancún</span>
       </h1>
-      <p class="text-xl text-white/75 max-w-xl">
+      <p class="text-lg text-neutral/60 max-w-xl leading-relaxed mb-8">
         Privados o compartidos. Puntual, seguro y confortable. Llega directo a tu hotel sin complicaciones.
       </p>
-      <div class="flex flex-wrap gap-3 mt-8">
-        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
-          🚐 {transfers.length}+ rutas disponibles
-        </div>
-        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
-          🕐 Seguimiento en tiempo real
-        </div>
-        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
-          👨‍✈️ Conductores certificados
-        </div>
+
+      <!-- Feature chips -->
+      <div class="flex flex-wrap gap-2">
+        {[
+          { icon: '🚐', label: `${transfers.length}+ rutas disponibles` },
+          { icon: '🕐', label: 'Seguimiento en tiempo real' },
+          { icon: '👨‍✈️', label: 'Conductores certificados' },
+          { icon: '💰', label: 'Sin costos ocultos' },
+        ].map(({ icon, label }) => (
+          <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral bg-white border-2 border-neutral shadow-pop-sm rounded-full px-3 py-1.5">
+            {icon} {label}
+          </span>
+        ))}
       </div>
     </div>
-    <div class="overflow-hidden" aria-hidden="true">
-      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
-        <path fill="#fffbf7" d="M0,20 C360,55 720,5 1080,35 C1260,50 1380,15 1440,20 L1440,50 L0,50 Z"/>
-      </svg>
-    </div>
-  </div>
+  </section>
 
-  <div class="container mx-auto px-4 py-12">
-    <!-- Filters -->
-    <div class="card bg-base-100 shadow-md border border-base-200 mb-8 reveal-up">
-      <div class="card-body p-5">
+  <!-- ══════════════════════════════════════════
+       FILTERS
+  ══════════════════════════════════════════ -->
+  <div class="bg-base-100">
+    <div class="container mx-auto px-4 pt-10 pb-4">
+      <div class="bg-white border-2 border-neutral shadow-pop rounded-2xl p-5 reveal-up">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-black text-neutral flex items-center gap-2 text-sm">
+            <span class="w-7 h-7 bg-sky-500 rounded-lg border-2 border-neutral shadow-pop-sm flex items-center justify-center text-white text-xs font-black">⚡</span>
+            Filtrar traslados
+          </h3>
+          <button
+            id="tf-reset"
+            class="text-xs font-bold text-neutral/50 hover:text-neutral border-2 border-transparent hover:border-neutral/20 px-3 py-1.5 rounded-full transition-all"
+          >
+            ↺ Limpiar
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Origen</span>
-            </label>
-            <input type="text" id="tf-from" placeholder="Ej: Aeropuerto Cancún" class="input input-bordered input-sm" />
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Origen</label>
+            <input type="text" id="tf-from" placeholder="Ej: Aeropuerto Cancún" class="pg-input" />
           </div>
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Destino</span>
-            </label>
-            <input type="text" id="tf-to" placeholder="Ej: Playa del Carmen" class="input input-bordered input-sm" />
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Destino</label>
+            <input type="text" id="tf-to" placeholder="Ej: Playa del Carmen" class="pg-input" />
           </div>
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Tipo de vehículo</span>
-            </label>
-            <select id="tf-vehicle" class="select select-bordered select-sm">
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Tipo de vehículo</label>
+            <select id="tf-vehicle" class="pg-select">
               <option value="">Todos</option>
               <option value="sedan">Sedán</option>
               <option value="suv">SUV</option>
@@ -78,11 +99,9 @@ const transfers = await api.getTransfers().catch(() => []);
               <option value="bus">Bus</option>
             </select>
           </div>
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Servicio</span>
-            </label>
-            <select id="tf-type" class="select select-bordered select-sm">
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Servicio</label>
+            <select id="tf-type" class="pg-select">
               <option value="">Todos</option>
               <option value="private">Privado</option>
               <option value="shared">Compartido</option>
@@ -92,125 +111,139 @@ const transfers = await api.getTransfers().catch(() => []);
       </div>
     </div>
 
-    <!-- Results Header -->
-    <div class="flex justify-between items-center mb-6">
-      <p class="text-base-content/70">
-        <span id="tf-count" class="font-bold text-base-content">{transfers.length}</span> opciones de traslado
-      </p>
-      <select id="tf-sort" class="select select-bordered select-sm">
-        <option value="price-asc">Precio: Menor a Mayor</option>
-        <option value="price-desc">Precio: Mayor a Menor</option>
-        <option value="featured">Destacados</option>
-      </select>
+    <!-- Results header -->
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-neutral/55 font-medium">
+          <span id="tf-count" class="font-black text-neutral">{transfers.length}</span> opciones de traslado
+        </p>
+        <select id="tf-sort" class="pg-select w-auto min-w-[180px]">
+          <option value="price-asc">Precio: Menor a Mayor</option>
+          <option value="price-desc">Precio: Mayor a Menor</option>
+          <option value="featured">Destacados</option>
+        </select>
+      </div>
     </div>
 
     <!-- Transfers Grid -->
-    <div id="tf-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-      {transfers.map((transfer, i) => (
-        <article
-          class={`card bg-base-100 shadow-md border border-base-200 card-lift reveal-up delay-${Math.min((i % 3 + 1) * 100, 400)}`}
-          data-from={transfer.from_location.toLowerCase()}
-          data-to={transfer.to_location.toLowerCase()}
-          data-vehicle={transfer.vehicle_type.toLowerCase()}
-          data-private={transfer.is_private ? 'private' : 'shared'}
-          data-price={transfer.price}
-          data-featured={transfer.featured ? '1' : '0'}
-        >
-          <div class="card-body p-6">
-            <div class="flex items-start justify-between gap-2 mb-4">
-              <h2 class="font-bold text-lg leading-tight">{transfer.name}</h2>
-              <span class={`badge badge-sm shrink-0 ${transfer.is_private ? 'badge-primary' : 'badge-accent'}`}>
-                {transfer.is_private ? 'Privado' : 'Compartido'}
-              </span>
-            </div>
-
-            {transfer.description && (
-              <p class="text-sm text-base-content/60 line-clamp-2 mb-4">{transfer.description}</p>
-            )}
-
-            <!-- Route -->
-            <div class="bg-base-200 rounded-xl p-4 mb-4">
-              <div class="flex items-center gap-2.5 text-sm">
-                <div class="w-2.5 h-2.5 rounded-full bg-success shrink-0 ring-2 ring-success/30"></div>
-                <span class="font-semibold truncate">{transfer.from_location}</span>
-              </div>
-              <div class="flex items-center gap-2.5 my-2">
-                <div class="ml-[4px] w-px h-6 bg-base-300"></div>
-                <span class="text-xs text-base-content/40 ml-0.5">
-                  {transfer.type === 'one-way' ? '→ Solo ida' : '⇄ Ida y vuelta'}
+    <div class="container mx-auto px-4 pb-16">
+      <div id="tf-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {transfers.map((transfer, i) => (
+          <article
+            class={`bg-white border-2 border-neutral shadow-pop card-sticker reveal-up delay-${Math.min((i % 3 + 1) * 100, 400)} rounded-2xl`}
+            data-from={transfer.from_location.toLowerCase()}
+            data-to={transfer.to_location.toLowerCase()}
+            data-vehicle={transfer.vehicle_type.toLowerCase()}
+            data-private={transfer.is_private ? 'private' : 'shared'}
+            data-price={transfer.price}
+            data-featured={transfer.featured ? '1' : '0'}
+          >
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-2 mb-4">
+                <h2 class="font-black text-lg leading-tight text-neutral">{transfer.name}</h2>
+                <span class={`text-xs font-black px-2.5 py-1 rounded-full border-2 border-neutral shadow-pop-sm shrink-0 ${transfer.is_private ? 'bg-sky-500 text-white' : 'bg-accent text-neutral'}`}>
+                  {transfer.is_private ? 'Privado' : 'Compartido'}
                 </span>
               </div>
-              <div class="flex items-center gap-2.5 text-sm">
-                <div class="w-2.5 h-2.5 rounded-full bg-error shrink-0 ring-2 ring-error/30"></div>
-                <span class="font-semibold truncate">{transfer.to_location}</span>
+
+              {transfer.description && (
+                <p class="text-sm text-neutral/55 line-clamp-2 mb-4">{transfer.description}</p>
+              )}
+
+              <!-- Route visualization -->
+              <div class="bg-slate-50 border-2 border-neutral/15 rounded-xl p-4 mb-4">
+                <div class="flex items-center gap-2.5 text-sm font-semibold text-neutral">
+                  <div class="w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-neutral shrink-0"></div>
+                  <span class="truncate">{transfer.from_location}</span>
+                </div>
+                <div class="flex items-center gap-2.5 my-2">
+                  <div class="ml-[4px] w-px h-5 bg-neutral/20"></div>
+                  <span class="text-xs text-neutral/40 font-semibold">
+                    {transfer.type === 'one-way' ? '→ Solo ida' : '⇄ Ida y vuelta'}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2.5 text-sm font-semibold text-neutral">
+                  <div class="w-2.5 h-2.5 rounded-full bg-red-400 border-2 border-neutral shrink-0"></div>
+                  <span class="truncate">{transfer.to_location}</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs text-neutral/55 font-semibold mb-4">
+                <span class="flex items-center gap-1.5 capitalize">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  </svg>
+                  {transfer.vehicle_type}
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Hasta {transfer.max_passengers} pas.
+                </span>
+              </div>
+
+              {transfer.features && (() => {
+                try {
+                  const features = JSON.parse(transfer.features as unknown as string);
+                  return features.length > 0 ? (
+                    <div class="flex flex-wrap gap-1.5 mb-4">
+                      {features.slice(0, 3).map((f: string) => (
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full border-2 border-neutral/20 text-neutral/60 bg-slate-50">
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null;
+                } catch { return null; }
+              })()}
+
+              <div class="flex items-center justify-between pt-4 border-t-2 border-neutral/10">
+                <div>
+                  <p class="text-xs text-neutral/40 font-medium">{transfer.type === 'one-way' ? 'Solo ida' : 'Ida y vuelta'}</p>
+                  <p class="text-2xl font-black price-gradient">
+                    ${transfer.price.toLocaleString('es-MX')}
+                  </p>
+                </div>
+                <a href={`/transfers/${transfer.slug}`} class="inline-flex items-center h-9 px-5 text-sm font-bold rounded-full bg-sky-500 text-white border-2 border-neutral shadow-pop-sm hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all">
+                  Reservar
+                </a>
               </div>
             </div>
+          </article>
+        ))}
+      </div>
 
-            <div class="grid grid-cols-2 gap-2 text-xs text-base-content/55 mb-4">
-              <span class="flex items-center gap-1.5 capitalize">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                </svg>
-                {transfer.vehicle_type}
-              </span>
-              <span class="flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Hasta {transfer.max_passengers} pas.
-              </span>
-            </div>
-
-            {transfer.features && (
-              <div class="flex flex-wrap gap-1.5 mb-4">
-                {(() => {
-                  try {
-                    const features = JSON.parse(transfer.features as unknown as string);
-                    return features.slice(0, 3).map((f: string) => (
-                      <span class="badge badge-outline badge-xs">{f}</span>
-                    ));
-                  } catch { return null; }
-                })()}
-              </div>
-            )}
-
-            <div class="flex items-center justify-between pt-4 border-t border-base-200">
-              <div>
-                <p class="text-xs text-base-content/50">{transfer.type === 'one-way' ? 'Solo ida' : 'Ida y vuelta'}</p>
-                <p class="text-2xl font-bold price-gradient">
-                  ${transfer.price.toLocaleString('es-MX')}
-                </p>
-              </div>
-              <a href={`/transfers/${transfer.slug}`} class="btn btn-secondary btn-sm px-5 text-white">
-                Reservar
-              </a>
-            </div>
-          </div>
-        </article>
-      ))}
-    </div>
-
-    <div id="tf-empty" class="hidden text-center py-20">
-      <p class="text-6xl mb-4">🔍</p>
-      <h3 class="text-2xl font-bold mb-2">No se encontraron traslados</h3>
-      <p class="text-base-content/60">Ajusta los filtros de búsqueda</p>
+      <div id="tf-empty" class="hidden text-center py-20">
+        <div class="w-20 h-20 bg-slate-50 border-2 border-neutral shadow-pop rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6">🔍</div>
+        <h3 class="text-2xl font-black text-neutral mb-2">No se encontraron traslados</h3>
+        <p class="text-neutral/55">Ajusta los filtros de búsqueda</p>
+        <button id="tf-empty-reset" class="inline-flex items-center h-9 px-5 text-sm font-semibold rounded-full bg-transparent text-neutral border-2 border-neutral shadow-pop-sm hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all mt-4">Limpiar filtros</button>
+      </div>
     </div>
   </div>
 
-  <!-- Why Us Section -->
-  <section class="bg-base-200 py-16">
+  <!-- ══════════════════════════════════════════
+       WHY US
+  ══════════════════════════════════════════ -->
+  <section class="bg-slate-50 border-t-2 border-neutral/10 py-16">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-10 reveal-up">¿Por qué reservar tu traslado con nosotros?</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 bg-sky-500 border-2 border-neutral shadow-pop-sm rounded-full px-4 py-1 text-white text-xs font-black uppercase tracking-widest mb-4 reveal-up">
+          Tranquilidad garantizada
+        </div>
+        <h2 class="text-3xl font-black text-neutral reveal-up delay-100">¿Por qué reservar con nosotros?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-up delay-200">
         {[
-          { icon: '🛡️', title: 'Seguro y confiable', desc: 'Conductores certificados con años de experiencia transportando turistas.' },
-          { icon: '⏰', title: 'Puntualidad garantizada', desc: 'Monitoreamos tu vuelo en tiempo real. Te esperamos aunque llegues tarde.' },
-          { icon: '💰', title: 'Sin costos ocultos', desc: 'El precio que ves es el precio que pagas. Sin sorpresas al llegar.' },
-        ].map(({ icon, title, desc }, i) => (
-          <div class={`reveal-up delay-${(i + 1) * 100} text-center`}>
-            <div class="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center text-3xl mx-auto mb-4">{icon}</div>
-            <h3 class="font-bold text-xl mb-2">{title}</h3>
-            <p class="text-base-content/65 text-sm leading-relaxed">{desc}</p>
+          { icon: '🛡️', title: 'Seguro y confiable', desc: 'Conductores certificados con años de experiencia transportando turistas.', color: 'bg-sky-100', border: 'border-sky-500' },
+          { icon: '⏰', title: 'Puntualidad garantizada', desc: 'Monitoreamos tu vuelo en tiempo real. Te esperamos aunque llegues tarde.', color: 'bg-accent/40', border: 'border-accent' },
+          { icon: '💰', title: 'Sin costos ocultos', desc: 'El precio que ves es el precio que pagas. Sin sorpresas al llegar.', color: 'bg-sky-100', border: 'border-sky-500' },
+        ].map(({ icon, title, desc, color, border }) => (
+          <div class="bg-white border-2 border-neutral shadow-pop rounded-xl p-6 text-center">
+            <div class={`w-14 h-14 ${color} border-2 ${border} rounded-xl flex items-center justify-center text-2xl mx-auto mb-4`}>{icon}</div>
+            <h3 class="font-black text-neutral text-lg mb-2">{title}</h3>
+            <p class="text-neutral/60 text-sm leading-relaxed">{desc}</p>
           </div>
         ))}
       </div>
@@ -224,6 +257,8 @@ const transfers = await api.getTransfers().catch(() => []);
   const vehicleSelect = document.getElementById('tf-vehicle') as HTMLSelectElement;
   const typeSelect = document.getElementById('tf-type') as HTMLSelectElement;
   const sortSelect = document.getElementById('tf-sort') as HTMLSelectElement;
+  const resetBtn = document.getElementById('tf-reset');
+  const emptyResetBtn = document.getElementById('tf-empty-reset');
   const grid = document.getElementById('tf-grid');
   const empty = document.getElementById('tf-empty');
   const countEl = document.getElementById('tf-count');
@@ -239,15 +274,10 @@ const transfers = await api.getTransfers().catch(() => []);
     let visible: HTMLElement[] = [];
 
     cards.forEach(card => {
-      const cardFrom = card.dataset.from || '';
-      const cardTo = card.dataset.to || '';
-      const cardVehicle = card.dataset.vehicle || '';
-      const cardPrivate = card.dataset.private || '';
-
-      const ok = (!from || cardFrom.includes(from))
-        && (!to || cardTo.includes(to))
-        && (!vehicle || cardVehicle === vehicle)
-        && (!type || cardPrivate === type);
+      const ok = (!from || (card.dataset.from || '').includes(from))
+        && (!to || (card.dataset.to || '').includes(to))
+        && (!vehicle || card.dataset.vehicle === vehicle)
+        && (!type || card.dataset.private === type);
 
       card.style.display = ok ? '' : 'none';
       if (ok) visible.push(card);
@@ -264,9 +294,20 @@ const transfers = await api.getTransfers().catch(() => []);
     if (empty) empty.classList.toggle('hidden', visible.length > 0);
   }
 
+  function resetFilters() {
+    if (fromInput) fromInput.value = '';
+    if (toInput) toInput.value = '';
+    if (vehicleSelect) vehicleSelect.value = '';
+    if (typeSelect) typeSelect.value = '';
+    if (sortSelect) sortSelect.value = 'price-asc';
+    filterTransfers();
+  }
+
   fromInput?.addEventListener('input', filterTransfers);
   toInput?.addEventListener('input', filterTransfers);
   vehicleSelect?.addEventListener('change', filterTransfers);
   typeSelect?.addEventListener('change', filterTransfers);
   sortSelect?.addEventListener('change', filterTransfers);
+  resetBtn?.addEventListener('click', resetFilters);
+  emptyResetBtn?.addEventListener('click', resetFilters);
 </script>

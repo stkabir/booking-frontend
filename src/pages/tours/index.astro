@@ -3,8 +3,6 @@ import Layout from '../../layouts/Layout.astro';
 import { api } from '../../lib/api';
 
 const tours = await api.getTours().catch(() => []);
-
-// Unique destinations for filter
 const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean);
 ---
 
@@ -12,96 +10,103 @@ const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean)
   title="Tours y Actividades en Cancún y Riviera Maya"
   description="Los mejores tours en Cancún, Chichén Itzá, Cozumel, Tulum, Playa del Carmen e Isla Mujeres. Experiencias únicas en el Caribe Mexicano al mejor precio."
   keywords="tours cancun, excursiones riviera maya, tour chichen itza, tour cozumel, tour tulum, snorkel cancun, cenotes riviera maya, tours playa del carmen, isla mujeres tour"
-  transparent={true}
 >
-  <!-- Page Header -->
-  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);">
-    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-      <div class="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/2"></div>
-      <div class="absolute bottom-10 left-1/4 w-48 h-48 rounded-full bg-emerald-300/8"></div>
-    </div>
-    <div class="container mx-auto px-4 pt-28 pb-20 relative z-10">
-      <nav aria-label="Breadcrumb" class="text-white/60 text-sm mb-6 flex items-center gap-2">
-        <a href="/" class="hover:text-white transition-colors">Inicio</a>
-        <span>/</span>
-        <span class="text-white font-medium">Tours</span>
+  <!-- ══════════════════════════════════════════
+       PAGE HEADER — Playful Geometric
+  ══════════════════════════════════════════ -->
+  <section class="relative overflow-hidden bg-base-100" aria-label="Tours">
+    <!-- Dot grid -->
+    <div class="absolute inset-0 pattern-dots-light opacity-50" aria-hidden="true"></div>
+    <!-- Decorative shapes -->
+    <div class="absolute -top-12 right-0 w-72 h-72 rounded-full bg-violet-500/20 border-2 border-violet-600/15 translate-x-1/4" aria-hidden="true"></div>
+    <div class="absolute top-20 right-28 w-14 h-14 bg-violet-500 border-2 border-neutral rotate-12 hidden md:block" aria-hidden="true"></div>
+    <div class="absolute top-36 right-12 w-9 h-9 rounded-full bg-accent border-2 border-neutral hidden lg:block" aria-hidden="true"></div>
+    <div class="absolute bottom-8 left-12 w-20 h-20 rounded-full bg-violet-500/15 border-2 border-violet-600/20 hidden md:block" aria-hidden="true"></div>
+    <div class="absolute bottom-12 left-1/3 text-2xl hidden lg:block select-none text-accent" aria-hidden="true">★</div>
+    <div class="absolute top-24 left-1/4 text-xl hidden lg:block select-none text-primary/40" aria-hidden="true">◆</div>
+
+    <div class="container mx-auto px-4 pt-28 pb-14 relative z-10">
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm font-semibold text-neutral/45 mb-6">
+        <a href="/" class="hover:text-primary transition-colors">Inicio</a>
+        <span>›</span>
+        <span class="text-neutral">Tours</span>
       </nav>
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
-        Tours y Actividades<br/>
-        <span class="text-emerald-200">en el Caribe Mexicano</span>
+
+      <!-- Category chip -->
+      <div class="inline-flex items-center gap-2 bg-violet-500 border-2 border-neutral shadow-pop-sm rounded-full px-4 py-1 text-white text-xs font-black uppercase tracking-widest mb-5">
+        🌴 Experiencias
+      </div>
+
+      <h1 class="text-5xl md:text-7xl font-black text-neutral leading-none tracking-tighter mb-5">
+        Tours y Actividades<br>
+        <span class="price-gradient">en el Caribe</span>
       </h1>
-      <p class="text-xl text-white/75 max-w-xl">
+      <p class="text-lg text-neutral/60 max-w-xl leading-relaxed mb-8">
         Chichén Itzá, cenotes, snorkel en Cozumel, Tulum místico y más. Vive experiencias que recordarás para siempre.
       </p>
-      <div class="flex flex-wrap gap-3 mt-8">
-        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
-          🌴 {tours.length}+ tours disponibles
-        </div>
-        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
-          👨‍👩‍👧 Para familias y grupos
-        </div>
-        <div class="inline-flex items-center gap-2 bg-white/12 border border-white/20 rounded-full px-4 py-1.5 text-white/85 text-sm">
-          ⭐ Guías certificados
-        </div>
+
+      <!-- Feature chips -->
+      <div class="flex flex-wrap gap-2">
+        {[
+          { icon: '🌴', label: `${tours.length}+ tours disponibles` },
+          { icon: '👨‍👩‍👧', label: 'Para familias y grupos' },
+          { icon: '⭐', label: 'Guías certificados' },
+          { icon: '🎫', label: 'Confirmación inmediata' },
+        ].map(({ icon, label }) => (
+          <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral bg-white border-2 border-neutral shadow-pop-sm rounded-full px-3 py-1.5">
+            {icon} {label}
+          </span>
+        ))}
       </div>
     </div>
-    <div class="overflow-hidden" aria-hidden="true">
-      <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full">
-        <path fill="#fffbf7" d="M0,30 C480,60 960,0 1440,35 L1440,50 L0,50 Z"/>
-      </svg>
-    </div>
-  </div>
+  </section>
 
-  <div class="container mx-auto px-4 py-12">
-    <!-- Filters Bar -->
-    <div class="card bg-base-100 shadow-md border border-base-200 mb-8 reveal-up">
-      <div class="card-body p-5">
+  <!-- ══════════════════════════════════════════
+       FILTERS BAR
+  ══════════════════════════════════════════ -->
+  <div class="bg-base-100">
+    <div class="container mx-auto px-4 pt-10 pb-4">
+      <div class="bg-white border-2 border-neutral shadow-pop rounded-2xl p-5 reveal-up">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-black text-neutral flex items-center gap-2 text-sm">
+            <span class="w-7 h-7 bg-violet-500 rounded-lg border-2 border-neutral shadow-pop-sm flex items-center justify-center text-white text-xs font-black">⚡</span>
+            Filtrar tours
+          </h3>
+          <button
+            id="tour-reset"
+            class="text-xs font-bold text-neutral/50 hover:text-neutral border-2 border-transparent hover:border-neutral/20 px-3 py-1.5 rounded-full transition-all"
+          >
+            ↺ Limpiar
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Search -->
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Buscar</span>
-            </label>
-            <input
-              type="text"
-              id="tour-search"
-              placeholder="Nombre del tour..."
-              class="input input-bordered input-sm"
-            />
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Buscar</label>
+            <input type="text" id="tour-search" placeholder="Nombre del tour..." class="pg-input" />
           </div>
-
-          <!-- Destination -->
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Destino</span>
-            </label>
-            <select id="tour-destination" class="select select-bordered select-sm">
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Destino</label>
+            <select id="tour-destination" class="pg-select">
               <option value="">Todos los destinos</option>
               {destinations.map(dest => (
                 <option value={dest}>{dest}</option>
               ))}
             </select>
           </div>
-
-          <!-- Difficulty -->
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Dificultad</span>
-            </label>
-            <select id="tour-difficulty" class="select select-bordered select-sm">
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Dificultad</label>
+            <select id="tour-difficulty" class="pg-select">
               <option value="">Todas</option>
               <option value="easy">Fácil</option>
               <option value="moderate">Moderado</option>
               <option value="hard">Difícil</option>
             </select>
           </div>
-
-          <!-- Sort -->
-          <div class="form-control">
-            <label class="label pb-1">
-              <span class="label-text text-sm font-semibold">Ordenar</span>
-            </label>
-            <select id="tour-sort" class="select select-bordered select-sm">
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-neutral/50 mb-1.5">Ordenar</label>
+            <select id="tour-sort" class="pg-select">
               <option value="featured">Destacados primero</option>
               <option value="price-asc">Precio: Menor a Mayor</option>
               <option value="price-desc">Precio: Mayor a Menor</option>
@@ -112,90 +117,97 @@ const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean)
     </div>
 
     <!-- Results Header -->
-    <div class="flex justify-between items-center mb-6">
-      <p class="text-base-content/70">
-        <span id="tour-count" class="font-bold text-base-content">{tours.length}</span> tours disponibles
-      </p>
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-neutral/55 font-medium">
+          <span id="tour-count" class="font-black text-neutral">{tours.length}</span> tours disponibles
+        </p>
+      </div>
     </div>
 
     <!-- Tours Grid -->
-    <div id="tours-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-      {tours.map((tour, i) => (
-        <article
-          class={`card bg-base-100 shadow-md border border-base-200 card-lift reveal-up delay-${Math.min((i % 3 + 1) * 100, 400)} overflow-hidden`}
-          data-name={tour.name.toLowerCase()}
-          data-destination={tour.destination?.toLowerCase() || ''}
-          data-difficulty={tour.difficulty_level}
-          data-price={tour.price_adult}
-          data-featured={tour.featured ? '1' : '0'}
-        >
-          <figure class="h-52 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-600"></div>
-            <div class="absolute inset-0 flex items-center justify-center opacity-20">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              </svg>
-            </div>
-            {tour.featured && (
-              <div class="absolute top-3 right-3 badge badge-hot text-xs px-2.5 py-1">Destacado</div>
-            )}
-            <div class="absolute top-3 left-3">
-              <span class="badge badge-neutral badge-sm">
-                {tour.difficulty_level === 'easy' ? 'Fácil' : tour.difficulty_level === 'moderate' ? 'Moderado' : 'Difícil'}
-              </span>
-            </div>
-          </figure>
-
-          <div class="card-body p-5">
-            <h2 class="font-bold text-lg leading-tight line-clamp-2">{tour.name}</h2>
-            <p class="text-sm text-base-content/60 line-clamp-2 mt-1">{tour.description}</p>
-
-            <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 text-xs text-base-content/55">
-              <span class="flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                </svg>
-                {tour.destination}
-              </span>
-              <span class="flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {tour.duration}
-              </span>
-              <span class="flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Hasta {tour.max_people} personas
-              </span>
-            </div>
-
-            <div class="flex items-center justify-between mt-4 pt-4 border-t border-base-200">
-              <div>
-                <p class="text-xs text-base-content/50">Precio adulto desde</p>
-                <p class="text-2xl font-bold price-gradient">
-                  ${tour.price_adult.toLocaleString('es-MX')}
-                  <span class="text-xs font-normal text-base-content/50 ml-0.5">MXN</span>
-                </p>
-                {tour.price_child && (
-                  <p class="text-xs text-base-content/50">Niños: ${tour.price_child.toLocaleString('es-MX')}</p>
-                )}
+    <div class="container mx-auto px-4 pb-16">
+      <div id="tours-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tours.map((tour, i) => (
+          <article
+            class={`bg-white border-2 border-neutral shadow-pop card-sticker reveal-up delay-${Math.min((i % 3 + 1) * 100, 400)} rounded-2xl overflow-hidden`}
+            data-name={tour.name.toLowerCase()}
+            data-destination={tour.destination?.toLowerCase() || ''}
+            data-difficulty={tour.difficulty_level}
+            data-price={tour.price_adult}
+            data-featured={tour.featured ? '1' : '0'}
+          >
+            <!-- Card image -->
+            <figure class="h-52 bg-violet-100 relative overflow-hidden">
+              <div class="absolute inset-0 pattern-dots-light opacity-50" aria-hidden="true"></div>
+              <div class="absolute inset-0 flex items-center justify-center text-7xl opacity-30" aria-hidden="true">🌴</div>
+              {tour.featured && (
+                <div class="absolute top-3 right-3 bg-secondary text-white text-xs font-black px-3 py-1 rounded-full border-2 border-neutral shadow-pop-sm">
+                  ✦ Destacado
+                </div>
+              )}
+              <div class="absolute top-3 left-3">
+                <span class="bg-neutral text-white text-xs font-black px-2.5 py-1 rounded-full">
+                  {tour.difficulty_level === 'easy' ? 'Fácil' : tour.difficulty_level === 'moderate' ? 'Moderado' : 'Difícil'}
+                </span>
               </div>
-              <a href={`/tours/${tour.slug}`} class="btn btn-primary btn-sm px-5">
-                Ver detalles
-              </a>
-            </div>
-          </div>
-        </article>
-      ))}
-    </div>
+              {tour.destination && (
+                <div class="absolute bottom-3 left-3 right-3 flex items-center gap-1 text-violet-600 text-xs font-bold">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  </svg>
+                  {tour.destination}
+                </div>
+              )}
+            </figure>
 
-    <!-- Empty State -->
-    <div id="tours-empty" class="hidden text-center py-20">
-      <p class="text-6xl mb-4">🔍</p>
-      <h3 class="text-2xl font-bold mb-2">No se encontraron tours</h3>
-      <p class="text-base-content/60">Intenta ajustar los filtros de búsqueda</p>
+            <!-- Card body -->
+            <div class="p-5">
+              <h2 class="font-black text-lg leading-tight line-clamp-2 text-neutral mb-1">{tour.name}</h2>
+              <p class="text-sm text-neutral/55 line-clamp-2">{tour.description}</p>
+
+              <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 text-xs text-neutral/50 font-semibold">
+                <span class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {tour.duration}
+                </span>
+                <span class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Hasta {tour.max_people} personas
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between mt-4 pt-4 border-t-2 border-neutral/10">
+                <div>
+                  <p class="text-xs text-neutral/40 font-medium">Adulto desde</p>
+                  <p class="text-2xl font-black price-gradient">
+                    ${tour.price_adult.toLocaleString('es-MX')}
+                    <span class="text-xs font-normal text-neutral/40 ml-0.5">MXN</span>
+                  </p>
+                  {tour.price_child && (
+                    <p class="text-xs text-neutral/40">Niños: ${tour.price_child.toLocaleString('es-MX')}</p>
+                  )}
+                </div>
+                <a href={`/tours/${tour.slug}`} class="inline-flex items-center h-9 px-5 text-sm font-bold rounded-full bg-violet-500 text-white border-2 border-neutral shadow-pop-sm hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all">
+                  Ver detalles
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Empty State -->
+      <div id="tours-empty" class="hidden text-center py-20">
+        <div class="w-20 h-20 bg-slate-50 border-2 border-neutral shadow-pop rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6">🔍</div>
+        <h3 class="text-2xl font-black text-neutral mb-2">No se encontraron tours</h3>
+        <p class="text-neutral/55">Intenta ajustar los filtros de búsqueda</p>
+        <button id="tour-empty-reset" class="inline-flex items-center h-9 px-5 text-sm font-semibold rounded-full bg-transparent text-neutral border-2 border-neutral shadow-pop-sm hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all mt-4">Limpiar filtros</button>
+      </div>
     </div>
   </div>
 </Layout>
@@ -205,6 +217,8 @@ const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean)
   const destSelect = document.getElementById('tour-destination') as HTMLSelectElement;
   const diffSelect = document.getElementById('tour-difficulty') as HTMLSelectElement;
   const sortSelect = document.getElementById('tour-sort') as HTMLSelectElement;
+  const resetBtn = document.getElementById('tour-reset');
+  const emptyResetBtn = document.getElementById('tour-empty-reset');
   const grid = document.getElementById('tours-grid');
   const empty = document.getElementById('tours-empty');
   const countEl = document.getElementById('tour-count');
@@ -216,41 +230,40 @@ const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean)
     const sort = sortSelect?.value || 'featured';
 
     const cards = Array.from(grid?.querySelectorAll('article') || []) as HTMLElement[];
-
     let visible: HTMLElement[] = [];
+
     cards.forEach(card => {
-      const name = card.dataset.name || '';
-      const cardDest = card.dataset.destination || '';
-      const cardDiff = card.dataset.difficulty || '';
+      const ok = (!search || (card.dataset.name || '').includes(search))
+        && (!dest || (card.dataset.destination || '').includes(dest))
+        && (!diff || card.dataset.difficulty === diff);
 
-      const matchSearch = !search || name.includes(search);
-      const matchDest = !dest || cardDest.includes(dest);
-      const matchDiff = !diff || cardDiff === diff;
-
-      if (matchSearch && matchDest && matchDiff) {
-        card.style.display = '';
-        visible.push(card);
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display = ok ? '' : 'none';
+      if (ok) visible.push(card);
     });
 
-    // Sort visible cards
     visible.sort((a, b) => {
       if (sort === 'price-asc') return Number(a.dataset.price) - Number(b.dataset.price);
       if (sort === 'price-desc') return Number(b.dataset.price) - Number(a.dataset.price);
       return Number(b.dataset.featured) - Number(a.dataset.featured);
     });
 
-    // Reorder in DOM
     visible.forEach(card => grid?.appendChild(card));
-
     if (countEl) countEl.textContent = String(visible.length);
     if (empty) empty.classList.toggle('hidden', visible.length > 0);
+  }
+
+  function resetFilters() {
+    if (searchInput) searchInput.value = '';
+    if (destSelect) destSelect.value = '';
+    if (diffSelect) diffSelect.value = '';
+    if (sortSelect) sortSelect.value = 'featured';
+    filterTours();
   }
 
   searchInput?.addEventListener('input', filterTours);
   destSelect?.addEventListener('change', filterTours);
   diffSelect?.addEventListener('change', filterTours);
   sortSelect?.addEventListener('change', filterTours);
+  resetBtn?.addEventListener('click', resetFilters);
+  emptyResetBtn?.addEventListener('click', resetFilters);
 </script>

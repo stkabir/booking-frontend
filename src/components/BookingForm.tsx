@@ -11,6 +11,18 @@ interface BookingFormProps {
 
 type PromoState = 'idle' | 'success' | 'error';
 
+const labelCls = 'block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5';
+const stepNumCls = 'w-7 h-7 rounded-full bg-violet-500 border-2 border-slate-800 shadow-[2px_2px_0px_0px_#1E293B] text-white text-xs flex items-center justify-center font-black shrink-0';
+
+function Spinner({ sm }: { sm?: boolean }) {
+  return (
+    <svg className={`animate-spin shrink-0 ${sm ? 'h-4 w-4' : 'h-5 w-5'}`} viewBox="0 0 24 24" fill="none">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
+  );
+}
+
 function StepperField({
   label,
   value,
@@ -29,29 +41,29 @@ function StepperField({
   description?: string;
 }) {
   return (
-    <div className="flex items-center justify-between py-3 px-4 bg-base-200/70 rounded-xl border border-base-300/50">
+    <div className="flex items-center justify-between py-3 px-4 bg-slate-50 rounded-xl border-2 border-slate-200">
       <div>
-        <p className="font-semibold text-sm">{label}</p>
-        {description && <p className="text-xs text-base-content/50 mt-0.5">{description}</p>}
+        <p className="font-black text-sm text-slate-800">{label}</p>
+        {description && <p className="text-xs text-slate-400 mt-0.5">{description}</p>}
       </div>
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onDecrement}
           disabled={value <= min}
-          className="w-8 h-8 rounded-full border-2 border-base-300 flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 hover:border-primary hover:text-primary disabled:cursor-not-allowed"
+          className="w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 hover:border-violet-500 hover:text-violet-500 disabled:cursor-not-allowed"
           aria-label={`Reducir ${label}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
           </svg>
         </button>
-        <span className="w-7 text-center font-bold text-lg tabular-nums">{value}</span>
+        <span className="w-7 text-center font-black text-lg tabular-nums text-slate-800">{value}</span>
         <button
           type="button"
           onClick={onIncrement}
           disabled={value >= max}
-          className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 hover:bg-primary/90 disabled:cursor-not-allowed shadow-sm"
+          className="w-8 h-8 rounded-full bg-violet-500 text-white border-2 border-slate-800 shadow-[2px_2px_0px_0px_#1E293B] flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label={`Aumentar ${label}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -66,7 +78,7 @@ function StepperField({
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p className="text-error text-xs mt-1 flex items-center gap-1 animate-[fadeSlideIn_0.2s_ease]">
+    <p className="text-red-500 text-xs mt-1 flex items-center gap-1 animate-[fadeSlideIn_0.2s_ease]">
       <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>
@@ -76,11 +88,11 @@ function FieldError({ message }: { message?: string }) {
 }
 
 function InlineBanner({ type, message, onDismiss }: { type: 'success' | 'error'; message: string; onDismiss?: () => void }) {
-  const colors = type === 'success'
-    ? 'bg-success/10 border-success/30 text-success'
-    : 'bg-error/10 border-error/30 text-error';
+  const cls = type === 'success'
+    ? 'bg-green-50 border-2 border-green-300 text-green-700'
+    : 'bg-red-50 border-2 border-red-300 text-red-700';
   return (
-    <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-sm font-medium animate-[fadeSlideIn_0.25s_ease] ${colors}`}>
+    <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium animate-[fadeSlideIn_0.25s_ease] ${cls}`}>
       {type === 'success' ? (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -131,7 +143,7 @@ export default function BookingForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  // ── Derived price calculations (no stale state) ──
+  // ── Derived price calculations ──
   const nights = (() => {
     if (itemType === 'hotel' && formData.startDate && formData.endDate) {
       const diff = new Date(formData.endDate).getTime() - new Date(formData.startDate).getTime();
@@ -154,7 +166,6 @@ export default function BookingForm({
   const discountAmount = promoState === 'success' ? subtotal * 0.15 : 0;
   const total = subtotal + tax - discountAmount;
 
-  // Clear promo discount if subtotal changes
   useEffect(() => {
     if (promoState === 'success') setPromoState('idle');
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -204,7 +215,6 @@ export default function BookingForm({
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      // Scroll to first error field
       setTimeout(() => {
         const el = document.querySelector('[data-has-error="true"]');
         el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -235,31 +245,34 @@ export default function BookingForm({
     }
   };
 
-  const stepClass = "w-7 h-7 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold shadow-sm";
-  const inputClass = (field: string) =>
-    `input input-bordered w-full transition-shadow focus:shadow-[0_0_0_3px_rgba(8,145,178,0.15)] ${errors[field] ? 'input-error' : ''}`;
+  const inputCls = (field: string) =>
+    `w-full h-10 px-4 bg-white border-2 rounded-xl text-slate-800 text-sm font-medium placeholder:text-slate-400 placeholder:font-normal focus:outline-none transition-all ${
+      errors[field]
+        ? 'border-red-400 focus:border-red-400 focus:shadow-[3px_3px_0px_0px_#F87171]'
+        : 'border-slate-200 focus:border-violet-500 focus:shadow-[3px_3px_0px_0px_#8B5CF6]'
+    }`;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
 
       {/* ── Step 1: Fecha ── */}
       <div className="space-y-3">
-        <h3 className="font-bold flex items-center gap-2 text-base">
-          <span className={stepClass}>1</span>
+        <h3 className="font-black text-slate-800 flex items-center gap-2 text-sm">
+          <span className={stepNumCls}>1</span>
           {itemType === 'hotel' ? 'Fechas de Estadía' : itemType === 'transfer' ? 'Fecha y Hora' : 'Fecha del Tour'}
         </h3>
 
         {itemType === 'hotel' && (
           <div className="grid grid-cols-2 gap-3">
             <div data-has-error={!!errors.startDate || undefined}>
-              <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Llegada *</span></label>
-              <input type="date" name="startDate" className={inputClass('startDate')}
+              <label className={labelCls}>Llegada *</label>
+              <input type="date" name="startDate" className={inputCls('startDate')}
                 value={formData.startDate} onChange={handleInput} min={today} />
               <FieldError message={errors.startDate} />
             </div>
             <div data-has-error={!!errors.endDate || undefined}>
-              <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Salida *</span></label>
-              <input type="date" name="endDate" className={inputClass('endDate')}
+              <label className={labelCls}>Salida *</label>
+              <input type="date" name="endDate" className={inputCls('endDate')}
                 value={formData.endDate} onChange={handleInput} min={formData.startDate || today} />
               <FieldError message={errors.endDate} />
             </div>
@@ -268,8 +281,8 @@ export default function BookingForm({
 
         {itemType === 'tour' && (
           <div data-has-error={!!errors.startDate || undefined}>
-            <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Fecha *</span></label>
-            <input type="date" name="startDate" className={inputClass('startDate')}
+            <label className={labelCls}>Fecha *</label>
+            <input type="date" name="startDate" className={inputCls('startDate')}
               value={formData.startDate} onChange={handleInput} min={today} />
             <FieldError message={errors.startDate} />
           </div>
@@ -278,28 +291,29 @@ export default function BookingForm({
         {itemType === 'transfer' && (
           <div className="space-y-3">
             <div data-has-error={!!errors.startDate || undefined}>
-              <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Fecha *</span></label>
-              <input type="date" name="startDate" className={inputClass('startDate')}
+              <label className={labelCls}>Fecha *</label>
+              <input type="date" name="startDate" className={inputCls('startDate')}
                 value={formData.startDate} onChange={handleInput} min={today} />
               <FieldError message={errors.startDate} />
             </div>
             <div data-has-error={!!errors.pickupTime || undefined}>
-              <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Hora de Recogida *</span></label>
-              <input type="time" name="pickupTime" className={inputClass('pickupTime')}
+              <label className={labelCls}>Hora de Recogida *</label>
+              <input type="time" name="pickupTime" className={inputCls('pickupTime')}
                 value={formData.pickupTime} onChange={handleInput} />
               <FieldError message={errors.pickupTime} />
             </div>
             <div>
-              <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Número de Vuelo <span className="font-normal opacity-60">(opcional)</span></span></label>
+              <label className={labelCls}>
+                Número de Vuelo <span className="font-normal normal-case text-slate-400">(opcional)</span>
+              </label>
               <input type="text" name="flightNumber" placeholder="Ej: AM1234"
-                className="input input-bordered w-full" value={formData.flightNumber} onChange={handleInput} />
+                className={inputCls('flightNumber')} value={formData.flightNumber} onChange={handleInput} />
             </div>
           </div>
         )}
 
-        {/* Nights badge */}
         {itemType === 'hotel' && formData.startDate && formData.endDate && nights > 0 && (
-          <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-semibold animate-[fadeSlideIn_0.2s_ease]">
+          <div className="inline-flex items-center gap-1.5 bg-violet-100 text-violet-700 border-2 border-violet-200 px-3 py-1.5 rounded-full text-sm font-bold animate-[fadeSlideIn_0.2s_ease]">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
@@ -310,8 +324,8 @@ export default function BookingForm({
 
       {/* ── Step 2: Personas ── */}
       <div className="space-y-3">
-        <h3 className="font-bold flex items-center gap-2 text-base">
-          <span className={stepClass}>2</span>
+        <h3 className="font-black text-slate-800 flex items-center gap-2 text-sm">
+          <span className={stepNumCls}>2</span>
           {itemType === 'transfer' ? 'Pasajeros' : 'Personas'}
         </h3>
 
@@ -340,48 +354,57 @@ export default function BookingForm({
 
       {/* ── Step 3: Datos de Contacto ── */}
       <div className="space-y-3">
-        <h3 className="font-bold flex items-center gap-2 text-base">
-          <span className={stepClass}>3</span>
+        <h3 className="font-black text-slate-800 flex items-center gap-2 text-sm">
+          <span className={stepNumCls}>3</span>
           Datos de Contacto
         </h3>
 
         <div data-has-error={!!errors.customerName || undefined}>
-          <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Nombre Completo *</span></label>
+          <label className={labelCls}>Nombre Completo *</label>
           <input type="text" name="customerName" placeholder="Juan García"
-            className={inputClass('customerName')} value={formData.customerName} onChange={handleInput} />
+            className={inputCls('customerName')} value={formData.customerName} onChange={handleInput} />
           <FieldError message={errors.customerName} />
         </div>
 
         <div data-has-error={!!errors.customerEmail || undefined}>
-          <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Correo Electrónico *</span></label>
+          <label className={labelCls}>Correo Electrónico *</label>
           <input type="email" name="customerEmail" placeholder="tu@correo.com"
-            className={inputClass('customerEmail')} value={formData.customerEmail} onChange={handleInput} />
+            className={inputCls('customerEmail')} value={formData.customerEmail} onChange={handleInput} />
           <FieldError message={errors.customerEmail} />
         </div>
 
         <div data-has-error={!!errors.customerPhone || undefined}>
-          <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Teléfono *</span></label>
+          <label className={labelCls}>Teléfono *</label>
           <input type="tel" name="customerPhone" placeholder="+52 998 123 4567"
-            className={inputClass('customerPhone')} value={formData.customerPhone} onChange={handleInput} />
+            className={inputCls('customerPhone')} value={formData.customerPhone} onChange={handleInput} />
           <FieldError message={errors.customerPhone} />
         </div>
 
         <div>
-          <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Peticiones Especiales <span className="font-normal opacity-60">(opcional)</span></span></label>
-          <textarea name="specialRequests" placeholder="Dietas especiales, accesibilidad, cumpleaños..."
-            className="textarea textarea-bordered w-full resize-none" rows={2}
-            value={formData.specialRequests} onChange={handleInput} />
+          <label className={labelCls}>
+            Peticiones Especiales <span className="font-normal normal-case text-slate-400">(opcional)</span>
+          </label>
+          <textarea
+            name="specialRequests"
+            placeholder="Dietas especiales, accesibilidad, cumpleaños..."
+            className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-slate-800 text-sm font-medium placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:border-violet-500 focus:shadow-[3px_3px_0px_0px_#8B5CF6] transition-all resize-none"
+            rows={2}
+            value={formData.specialRequests}
+            onChange={handleInput}
+          />
         </div>
       </div>
 
       {/* ── Código Promocional ── */}
       <div className="space-y-2">
-        <label className="label pb-1"><span className="label-text text-xs font-semibold text-base-content/70">Código Promocional</span></label>
-        <div className="join w-full">
+        <label className={labelCls}>Código Promocional</label>
+        <div className={`flex w-full rounded-xl overflow-hidden border-2 transition-all ${
+          promoState === 'error' ? 'border-red-400' : promoState === 'success' ? 'border-green-400' : 'border-slate-200 focus-within:border-violet-500'
+        }`}>
           <input
             type="text"
             placeholder="Ej: VERANO2026"
-            className={`input input-bordered join-item flex-1 uppercase tracking-widest text-sm ${promoState === 'error' ? 'input-error' : promoState === 'success' ? 'input-success' : ''}`}
+            className="flex-1 h-10 px-4 bg-white text-slate-800 text-sm font-black uppercase tracking-widest placeholder:normal-case placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-400 focus:outline-none"
             value={promoCode}
             onChange={(e) => {
               setPromoCode(e.target.value);
@@ -389,7 +412,11 @@ export default function BookingForm({
             }}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyPromo())}
           />
-          <button type="button" className="btn btn-primary join-item px-5" onClick={handleApplyPromo}>
+          <button
+            type="button"
+            className="h-10 px-5 bg-violet-500 text-white font-black text-sm border-l-2 border-slate-800 hover:bg-violet-600 transition-colors"
+            onClick={handleApplyPromo}
+          >
             Aplicar
           </button>
         </div>
@@ -401,29 +428,29 @@ export default function BookingForm({
         )}
       </div>
 
-      <div className="divider my-1"></div>
+      <div className="border-t-2 border-slate-100 my-1" />
 
       {/* ── Resumen de Precio ── */}
-      <div className="bg-base-200/60 rounded-2xl p-5 space-y-2.5 border border-base-300/40">
-        <h3 className="font-bold text-sm mb-3 text-base-content/80 uppercase tracking-wide">Resumen</h3>
+      <div className="bg-slate-50 rounded-2xl p-5 space-y-2.5 border-2 border-slate-100">
+        <h3 className="font-black text-xs uppercase tracking-widest text-slate-500 mb-3">Resumen</h3>
 
         {itemType === 'hotel' && (
           <div className="flex justify-between text-sm">
-            <span className="text-base-content/70">${itemPrice.toLocaleString('es-MX')} × {nights} {nights === 1 ? 'noche' : 'noches'}</span>
-            <span className="font-medium">${(itemPrice * nights).toLocaleString('es-MX')}</span>
+            <span className="text-slate-500">${itemPrice.toLocaleString('es-MX')} × {nights} {nights === 1 ? 'noche' : 'noches'}</span>
+            <span className="font-bold text-slate-800">${(itemPrice * nights).toLocaleString('es-MX')}</span>
           </div>
         )}
 
         {itemType === 'tour' && (
           <>
             <div className="flex justify-between text-sm">
-              <span className="text-base-content/70">{formData.adults} {formData.adults === 1 ? 'Adulto' : 'Adultos'} × ${itemPrice.toLocaleString('es-MX')}</span>
-              <span className="font-medium">${(itemPrice * formData.adults).toLocaleString('es-MX')}</span>
+              <span className="text-slate-500">{formData.adults} {formData.adults === 1 ? 'Adulto' : 'Adultos'} × ${itemPrice.toLocaleString('es-MX')}</span>
+              <span className="font-bold text-slate-800">${(itemPrice * formData.adults).toLocaleString('es-MX')}</span>
             </div>
             {formData.children > 0 && childPrice && (
               <div className="flex justify-between text-sm">
-                <span className="text-base-content/70">{formData.children} {formData.children === 1 ? 'Niño' : 'Niños'} × ${childPrice.toLocaleString('es-MX')}</span>
-                <span className="font-medium">${(childPrice * formData.children).toLocaleString('es-MX')}</span>
+                <span className="text-slate-500">{formData.children} {formData.children === 1 ? 'Niño' : 'Niños'} × ${childPrice.toLocaleString('es-MX')}</span>
+                <span className="font-bold text-slate-800">${(childPrice * formData.children).toLocaleString('es-MX')}</span>
               </div>
             )}
           </>
@@ -431,44 +458,48 @@ export default function BookingForm({
 
         {itemType === 'transfer' && (
           <div className="flex justify-between text-sm">
-            <span className="text-base-content/70">Traslado</span>
-            <span className="font-medium">${itemPrice.toLocaleString('es-MX')}</span>
+            <span className="text-slate-500">Traslado</span>
+            <span className="font-bold text-slate-800">${itemPrice.toLocaleString('es-MX')}</span>
           </div>
         )}
 
-        <div className="flex justify-between text-sm text-base-content/60">
+        <div className="flex justify-between text-sm text-slate-400">
           <span>IVA (16%)</span>
           <span>+${tax.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</span>
         </div>
 
         {discountAmount > 0 && (
-          <div className="flex justify-between text-sm text-success font-semibold animate-[fadeSlideIn_0.2s_ease]">
+          <div className="flex justify-between text-sm text-green-600 font-bold animate-[fadeSlideIn_0.2s_ease]">
             <span>Descuento (15%)</span>
             <span>−${discountAmount.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</span>
           </div>
         )}
 
-        <div className="border-t border-base-300/60 pt-3 mt-1 flex justify-between items-baseline">
-          <span className="font-bold">Total</span>
-          <span className="text-2xl font-bold price-gradient tabular-nums">
+        <div className="border-t-2 border-slate-200 pt-3 mt-1 flex justify-between items-baseline">
+          <span className="font-black text-slate-800">Total</span>
+          <span className="text-2xl font-black price-gradient tabular-nums">
             ${total.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
-            <span className="text-xs font-normal text-base-content/50 ml-1">MXN</span>
+            <span className="text-xs font-normal text-slate-400 ml-1">MXN</span>
           </span>
         </div>
       </div>
 
-      {/* Submit error */}
       {submitError && <InlineBanner type="error" message={submitError} onDismiss={() => setSubmitError('')} />}
 
-      {/* ── Submit Button ── */}
+      {/* ── Submit ── */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="btn btn-primary btn-block btn-lg rounded-xl shadow-md active:scale-[0.98] transition-transform disabled:opacity-70"
+        className="w-full h-12 bg-violet-500 text-white font-black rounded-full border-2 border-slate-800 shadow-[3px_3px_0px_0px_#1E293B]
+                   flex items-center justify-center gap-2
+                   hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[5px_5px_0px_0px_#1E293B]
+                   active:translate-x-px active:translate-y-px active:shadow-[1px_1px_0px_0px_#1E293B]
+                   transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed
+                   disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-[3px_3px_0px_0px_#1E293B]"
       >
         {isSubmitting ? (
           <>
-            <span className="loading loading-spinner loading-sm"></span>
+            <Spinner sm />
             Procesando...
           </>
         ) : (
@@ -481,9 +512,9 @@ export default function BookingForm({
         )}
       </button>
 
-      <p className="text-xs text-center text-base-content/50">
+      <p className="text-xs text-center text-slate-400">
         Al continuar aceptas nuestros{' '}
-        <a href="/terms" className="underline hover:text-primary transition-colors">términos y condiciones</a>
+        <a href="/terms" className="underline hover:text-violet-600 transition-colors">términos y condiciones</a>
       </p>
     </form>
   );

@@ -13,61 +13,45 @@ export default function HotelFilters({ hotels, onFilter }: HotelFiltersProps) {
   const [priceRange, setPriceRange] = useState('');
   const [sortBy, setSortBy] = useState('featured');
 
-  // Extract unique cities from hotels
   const cities = [...new Set(hotels.map((h) => h.city))];
+
+  const inputCls = `w-full h-10 px-4 bg-white border-2 border-slate-200 rounded-xl text-slate-800 text-sm font-medium
+    focus:outline-none focus:border-emerald-500 focus:shadow-[3px_3px_0px_0px_#10B981] transition-all placeholder:text-slate-400 placeholder:font-normal`;
+
+  const selectCls = `w-full h-10 px-4 pr-9 bg-white border-2 border-slate-200 rounded-xl text-slate-800 text-sm font-medium appearance-none
+    focus:outline-none focus:border-emerald-500 focus:shadow-[3px_3px_0px_0px_#10B981] transition-all`;
+
+  const labelCls = 'block text-xs font-black uppercase tracking-wider text-slate-400 mb-1.5';
 
   useEffect(() => {
     let filtered = [...hotels];
 
-    // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter((hotel) =>
-        hotel.name.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter((h) =>
+        h.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
-    // Apply city filter
     if (selectedCity) {
-      filtered = filtered.filter((hotel) => hotel.city === selectedCity);
+      filtered = filtered.filter((h) => h.city === selectedCity);
     }
-
-    // Apply stars filter
     if (selectedStars) {
-      filtered = filtered.filter((hotel) => hotel.stars === parseInt(selectedStars));
+      filtered = filtered.filter((h) => h.stars === parseInt(selectedStars));
     }
-
-    // Apply price range filter
     if (priceRange) {
-      filtered = filtered.filter((hotel) => {
-        const price = hotel.price_per_night;
-        switch (priceRange) {
-          case 'low':
-            return price < 1000;
-          case 'medium':
-            return price >= 1000 && price <= 2000;
-          case 'high':
-            return price > 2000;
-          default:
-            return true;
-        }
+      filtered = filtered.filter((h) => {
+        const p = h.price_per_night;
+        if (priceRange === 'low') return p < 1000;
+        if (priceRange === 'medium') return p >= 1000 && p <= 2000;
+        if (priceRange === 'high') return p > 2000;
+        return true;
       });
     }
 
-    // Apply sorting
     switch (sortBy) {
-      case 'price-asc':
-        filtered.sort((a, b) => a.price_per_night - b.price_per_night);
-        break;
-      case 'price-desc':
-        filtered.sort((a, b) => b.price_per_night - a.price_per_night);
-        break;
-      case 'name':
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'featured':
-      default:
-        filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-        break;
+      case 'price-asc': filtered.sort((a, b) => a.price_per_night - b.price_per_night); break;
+      case 'price-desc': filtered.sort((a, b) => b.price_per_night - a.price_per_night); break;
+      case 'name': filtered.sort((a, b) => a.name.localeCompare(b.name)); break;
+      default: filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
 
     onFilter(filtered);
@@ -81,109 +65,112 @@ export default function HotelFilters({ hotels, onFilter }: HotelFiltersProps) {
     setSortBy('featured');
   };
 
+  // Custom select arrow SVG as background
+  const selectStyle = {
+    backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%231E293B' d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E")`,
+    backgroundRepeat: 'no-repeat' as const,
+    backgroundPosition: 'right 0.75rem center',
+    backgroundSize: '12px',
+  };
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Filters Card */}
-      <div className="card bg-base-100 shadow-sm border border-base-200">
-        <div className="card-body p-5">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              </svg>
-              Filtros
-            </h3>
-            <button onClick={handleReset} className="btn btn-ghost btn-sm text-xs gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Limpiar
-            </button>
+      <div className="bg-white border-2 border-slate-800 shadow-[4px_4px_0px_0px_#1E293B] rounded-2xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-black text-slate-800 flex items-center gap-2 text-sm">
+            <span className="w-7 h-7 bg-emerald-500 rounded-lg border-2 border-slate-800 shadow-[2px_2px_0px_0px_#1E293B] flex items-center justify-center text-white text-xs">
+              ⚡
+            </span>
+            Filtrar hoteles
+          </h3>
+          <button
+            onClick={handleReset}
+            className="text-xs font-bold text-slate-400 hover:text-slate-800 border-2 border-transparent hover:border-slate-200 px-3 py-1.5 rounded-full transition-all"
+          >
+            ↺ Limpiar
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Search */}
+          <div>
+            <label className={labelCls}>Buscar</label>
+            <input
+              type="text"
+              placeholder="Nombre del hotel..."
+              className={inputCls}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Search */}
-            <div className="form-control">
-              <label className="label pt-0">
-                <span className="label-text font-semibold text-xs uppercase tracking-wide">Buscar</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Nombre del hotel..."
-                className="input input-bordered input-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+          {/* City */}
+          <div>
+            <label className={labelCls}>Ciudad</label>
+            <select
+              className={selectCls}
+              style={selectStyle}
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+            >
+              <option value="">Todas las ciudades</option>
+              {cities.map((city) => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
 
-            {/* City Filter */}
-            <div className="form-control">
-              <label className="label pt-0">
-                <span className="label-text font-semibold text-xs uppercase tracking-wide">Ciudad</span>
-              </label>
-              <select
-                className="select select-bordered select-sm"
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-              >
-                <option value="">Todas las ciudades</option>
-                {cities.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {/* Stars */}
+          <div>
+            <label className={labelCls}>Categoría</label>
+            <select
+              className={selectCls}
+              style={selectStyle}
+              value={selectedStars}
+              onChange={(e) => setSelectedStars(e.target.value)}
+            >
+              <option value="">Todas las categorías</option>
+              <option value="5">5 estrellas ★★★★★</option>
+              <option value="4">4 estrellas ★★★★</option>
+              <option value="3">3 estrellas ★★★</option>
+            </select>
+          </div>
 
-            {/* Stars Filter */}
-            <div className="form-control">
-              <label className="label pt-0">
-                <span className="label-text font-semibold text-xs uppercase tracking-wide">Categoría</span>
-              </label>
-              <select
-                className="select select-bordered select-sm"
-                value={selectedStars}
-                onChange={(e) => setSelectedStars(e.target.value)}
-              >
-                <option value="">Todas las categorías</option>
-                <option value="5">5 estrellas ★★★★★</option>
-                <option value="4">4 estrellas ★★★★</option>
-                <option value="3">3 estrellas ★★★</option>
-              </select>
-            </div>
-
-            {/* Price Filter */}
-            <div className="form-control">
-              <label className="label pt-0">
-                <span className="label-text font-semibold text-xs uppercase tracking-wide">Precio / noche</span>
-              </label>
-              <select
-                className="select select-bordered select-sm"
-                value={priceRange}
-                onChange={(e) => setPriceRange(e.target.value)}
-              >
-                <option value="">Cualquier precio</option>
-                <option value="low">Hasta $1,000 MXN</option>
-                <option value="medium">$1,000 – $2,000 MXN</option>
-                <option value="high">Más de $2,000 MXN</option>
-              </select>
-            </div>
+          {/* Price */}
+          <div>
+            <label className={labelCls}>Precio / noche</label>
+            <select
+              className={selectCls}
+              style={selectStyle}
+              value={priceRange}
+              onChange={(e) => setPriceRange(e.target.value)}
+            >
+              <option value="">Cualquier precio</option>
+              <option value="low">Hasta $1,000 MXN</option>
+              <option value="medium">$1,000 – $2,000 MXN</option>
+              <option value="high">Más de $2,000 MXN</option>
+            </select>
           </div>
         </div>
       </div>
 
-      {/* Sort Selector */}
+      {/* Sort Row */}
       <div className="flex justify-end">
-        <select
-          className="select select-bordered select-sm w-auto"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="featured">Ordenar: Destacados</option>
-          <option value="price-asc">Precio: Menor a Mayor</option>
-          <option value="price-desc">Precio: Mayor a Menor</option>
-          <option value="name">Nombre: A-Z</option>
-        </select>
+        <div className="relative">
+          <select
+            className="h-10 pl-4 pr-9 bg-white border-2 border-slate-800 shadow-[3px_3px_0px_0px_#1E293B] rounded-full text-slate-800 text-sm font-bold appearance-none
+              focus:outline-none focus:border-emerald-500 focus:shadow-[3px_3px_0px_0px_#10B981] transition-all"
+            style={selectStyle}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="featured">Ordenar: Destacados</option>
+            <option value="price-asc">Precio: Menor a Mayor</option>
+            <option value="price-desc">Precio: Mayor a Menor</option>
+            <option value="name">Nombre: A-Z</option>
+          </select>
+        </div>
       </div>
     </div>
   );
