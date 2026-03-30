@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
-import { api } from '../lib/api';
+import { hotels } from '../data/hotels';
+import { tours } from '../data/tours';
+import { transfers } from '../data/transfers';
 
 const SITE_URL = 'https://bookingcaribe.com';
 
@@ -14,33 +16,12 @@ const staticPages = [
   { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
 ];
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = () => {
   const today = new Date().toISOString().split('T')[0];
 
-  // Fetch dynamic pages
-  let tourUrls: string[] = [];
-  let hotelUrls: string[] = [];
-  let transferUrls: string[] = [];
-
-  try {
-    const [tours, hotels, transfers] = await Promise.allSettled([
-      api.getTours(),
-      api.getHotels(),
-      api.getTransfers(),
-    ]);
-
-    if (tours.status === 'fulfilled') {
-      tourUrls = tours.value.map((t) => `/tours/${t.slug}`);
-    }
-    if (hotels.status === 'fulfilled') {
-      hotelUrls = hotels.value.map((h) => `/hotels/${h.slug}`);
-    }
-    if (transfers.status === 'fulfilled') {
-      transferUrls = transfers.value.map((t) => `/transfers/${t.slug}`);
-    }
-  } catch {
-    // Sitemap still works with just static pages
-  }
+  const tourUrls = tours.filter(t => t.is_active).map(t => `/tours/${t.slug}`);
+  const hotelUrls = hotels.filter(h => h.is_active).map(h => `/hotels/${h.slug}`);
+  const transferUrls = transfers.filter(t => t.is_active).map(t => `/transfers/${t.slug}`);
 
   const dynamicPages = [
     ...tourUrls.map((url) => ({ url, priority: '0.8', changefreq: 'weekly' })),

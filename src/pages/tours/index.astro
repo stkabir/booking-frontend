@@ -1,8 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { api } from '../../lib/api';
+import { tours } from '../../data/tours';
 
-const tours = await api.getTours().catch(() => []);
 const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean);
 ---
 

@@ -1,16 +1,14 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
-import { api } from '../../lib/api';
+import { hotels, getHotel } from '../../data/hotels';
+
+export function getStaticPaths() {
+  return hotels.map(h => ({ params: { slug: h.slug } }));
+}
 
 const { slug } = Astro.params;
-
-let hotel;
-try {
-  hotel = await api.getHotel(slug!);
-} catch {
-  return Astro.redirect('/hotels');
-}
+const hotel = getHotel(slug!)!;
 
 const amenities = (() => {
   try { return hotel.amenities ? JSON.parse(hotel.amenities as unknown as string) : []; }

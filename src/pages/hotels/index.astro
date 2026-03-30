@@ -1,9 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import HotelList from '../../components/HotelList';
-import { api } from '../../lib/api';
-
-const hotels = await api.getHotels().catch(() => []);
+import { hotels } from '../../data/hotels';
 ---
 
 <Layout

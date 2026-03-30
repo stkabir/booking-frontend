@@ -1,11 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { api } from '../lib/api';
+import { getFeaturedHotels } from '../data/hotels';
+import { getFeaturedTours } from '../data/tours';
+import { getFeaturedTransfers } from '../data/transfers';
+import { getBanners } from '../data/banners';
 
-const featuredHotels   = await api.getFeaturedHotels().catch(() => []);
-const featuredTours    = await api.getFeaturedTours().catch(() => []);
-const featuredTransfers = await api.getFeaturedTransfers().catch(() => []);
-const banners          = await api.getBanners('home').catch(() => []);
+const featuredHotels    = getFeaturedHotels();
+const featuredTours     = getFeaturedTours();
+const featuredTransfers = getFeaturedTransfers();
+const banners           = getBanners('home');
 
 const heroSubtitle = banners[0]?.subtitle || 'Tours, hoteles y traslados en el Caribe Mexicano. Más de 5,000 viajeros felices.';
 

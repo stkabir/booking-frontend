@@ -1,16 +1,14 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
-import { api } from '../../lib/api';
+import { tours, getTour } from '../../data/tours';
+
+export function getStaticPaths() {
+  return tours.map(t => ({ params: { slug: t.slug } }));
+}
 
 const { slug } = Astro.params;
-
-let tour;
-try {
-  tour = await api.getTour(slug!);
-} catch {
-  return Astro.redirect('/tours');
-}
+const tour = getTour(slug!)!;
 
 const included = (() => {
   try { return tour.included ? JSON.parse(tour.included as unknown as string) : []; }

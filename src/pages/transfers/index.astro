@@ -1,8 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { api } from '../../lib/api';
-
-const transfers = await api.getTransfers().catch(() => []);
+import { transfers } from '../../data/transfers';
 ---
 
 <Layout
