@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import BookingForm from '../../components/BookingForm';
 import { api } from '../../lib/api';
+import { getClientConfig } from '../../config/client.config';
+
+if (!(await getClientConfig()).services.hotels) return Astro.redirect('/');
 
 const { slug } = Astro.params;
 

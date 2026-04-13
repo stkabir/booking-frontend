@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css';
+import { getClientConfig } from '../config/client.config';
+
+const cfg = await getClientConfig();
 
 interface Props {
   title: string;
@@ -13,49 +16,37 @@ interface Props {
 
 const {
   title,
-  description = 'Reserva tours, hoteles y traslados en el Caribe Mexicano. Las mejores experiencias en Cancún, Playa del Carmen, Tulum y Riviera Maya al mejor precio.',
-  keywords = 'tours cancun, hoteles riviera maya, traslado aeropuerto cancun, tours playa del carmen, excursiones tulum, traslado cancun hotel, booking caribe, tours chichen itza, tours cozumel',
+  description = cfg.location.description,
+  keywords = cfg.location.seoKeywords.join(', '),
   ogImage = '/og-image.jpg',
   schema,
   noindex = false,
   transparent = false,
 } = Astro.props;
 
-const siteURL = 'https://bookingcaribe.com';
+const siteURL = cfg.brand.siteUrl;
 const canonicalURL = new URL(Astro.url.pathname, siteURL);
-const fullTitle = title.includes('Booking Caribe')
+const fullTitle = title.includes(cfg.brand.name)
   ? title
-  : `${title} | Booking Caribe`;
+  : `${title} | ${cfg.brand.name}`;
+
+// CTA del navbar: primer servicio habilitado
+const ctaHref = cfg.services.tours ? '/tours' : cfg.services.hotels ? '/hotels' : '/transfers';
 
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'TravelAgency',
-  name: 'Booking Caribe',
-  description:
-    'Agencia de turismo especializada en tours, hoteles y traslados en el Caribe Mexicano',
+  name: cfg.brand.name,
+  description: cfg.location.description,
   url: siteURL,
-  telephone: '+529981234567',
-  email: 'info@bookingcaribe.com',
+  telephone: cfg.contact.phone.replace(/\s/g, ''),
+  email: cfg.contact.email,
   address: {
     '@type': 'PostalAddress',
-    addressLocality: 'Cancún',
-    addressRegion: 'Quintana Roo',
-    postalCode: '77500',
-    addressCountry: 'MX',
+    addressLocality: cfg.location.name,
+    addressRegion: cfg.location.region,
+    addressCountry: cfg.location.country,
   },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: 21.1619,
-    longitude: -86.8515,
-  },
-  areaServed: [
-    'Cancún',
-    'Playa del Carmen',
-    'Tulum',
-    'Cozumel',
-    'Riviera Maya',
-    'Quintana Roo',
-  ],
   priceRange: '$$',
   openingHours: 'Mo-Su 00:00-24:00',
 };
@@ -63,14 +54,14 @@ const orgSchema = {
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Booking Caribe',
+  name: cfg.brand.name,
   url: siteURL,
   inLanguage: 'es-MX',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: `${siteURL}/tours?q={search_term_string}`,
+      urlTemplate: `${siteURL}${ctaHref}?q={search_term_string}`,
     },
     'query-input': 'required name=search_term_string',
   },
@@ -123,7 +114,7 @@ const allSchemas = [
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="es_MX" />
-    <meta property="og:site_name" content="Booking Caribe" />
+    <meta property="og:site_name" content={cfg.brand.name} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -131,14 +122,22 @@ const allSchemas = [
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, siteURL)} />
-    <meta name="twitter:site" content="@bookingcaribe" />
 
     <!-- Theme Color -->
-    <meta name="theme-color" content="#8B5CF6" />
-    <meta name="msapplication-TileColor" content="#8B5CF6" />
+    <meta name="theme-color" content={cfg.brand.primaryColor} />
+    <meta name="msapplication-TileColor" content={cfg.brand.primaryColor} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={cfg.brand.favicon} />
+
+    <!-- Brand color overrides (Tailwind v4 CSS vars) -->
+    <style set:html={`
+      :root {
+        --color-primary: ${cfg.brand.primaryColor};
+        --color-secondary: ${cfg.brand.secondaryColor};
+        --color-accent: ${cfg.brand.accentColor};
+      }
+    `} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Google Fonts -->
@@ -150,7 +149,7 @@ const allSchemas = [
     />
 
     <!-- Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify(allSchemas)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(allSchemas)} />
   </head>
 
   <body class="bg-base-100 antialiased">
@@ -195,24 +194,30 @@ const allSchemas = [
                 class="hidden absolute top-full left-0 mt-3 z-100 w-64 p-3 rounded-2xl bg-base-100 border-2 border-neutral shadow-pop-lg"
               >
                 <nav class="flex flex-col">
-                  <a href="/hotels" class="flex items-center gap-2.5 font-semibold py-2.5 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Hoteles
-                  </a>
-                  <a href="/tours" class="flex items-center gap-2.5 font-semibold py-2.5 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    </svg>
-                    Tours y Actividades
-                  </a>
-                  <a href="/transfers" class="flex items-center gap-2.5 font-semibold py-2.5 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
-                    Traslados
-                  </a>
+                  {cfg.services.hotels && (
+                    <a href="/hotels" class="flex items-center gap-2.5 font-semibold py-2.5 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                      Hoteles
+                    </a>
+                  )}
+                  {cfg.services.tours && (
+                    <a href="/tours" class="flex items-center gap-2.5 font-semibold py-2.5 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      </svg>
+                      Tours y Actividades
+                    </a>
+                  )}
+                  {cfg.services.transfers && (
+                    <a href="/transfers" class="flex items-center gap-2.5 font-semibold py-2.5 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                      </svg>
+                      Traslados
+                    </a>
+                  )}
                   <hr class="my-2 border-neutral/10" />
                   <a href="/about" class="py-2 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral/70">Nosotros</a>
                   <a href="/contact" class="py-2 px-3 rounded-xl hover:bg-primary/8 hover:text-primary transition-colors nav-text text-neutral/70">Contacto</a>
@@ -240,7 +245,8 @@ const allSchemas = [
                 </svg>
               </div>
               <span class="text-[1.1rem] font-bold tracking-tight nav-logo-text text-neutral">
-                Booking <span class="nav-logo-accent text-primary">Caribe</span>
+                {cfg.brand.name.split(' ').slice(0, -1).join(' ')}{' '}
+                <span class="nav-logo-accent text-primary">{cfg.brand.name.split(' ').at(-1)}</span>
               </span>
             </a>
           </div>
@@ -248,21 +254,27 @@ const allSchemas = [
           <!-- Desktop Nav (centered) -->
           <nav class="hidden lg:flex absolute left-1/2 -translate-x-1/2">
             <ul class="flex gap-0.5 px-1 text-sm font-semibold">
-              <li>
-                <a href="/hotels" class="rounded-xl px-4 py-2 nav-text text-neutral hover:text-primary hover:bg-primary/8 transition-colors inline-block">
-                  Hoteles
-                </a>
-              </li>
-              <li>
-                <a href="/tours" class="rounded-xl px-4 py-2 nav-text text-neutral hover:text-primary hover:bg-primary/8 transition-colors inline-block">
-                  Tours
-                </a>
-              </li>
-              <li>
-                <a href="/transfers" class="rounded-xl px-4 py-2 nav-text text-neutral hover:text-primary hover:bg-primary/8 transition-colors inline-block">
-                  Traslados
-                </a>
-              </li>
+              {cfg.services.hotels && (
+                <li>
+                  <a href="/hotels" class="rounded-xl px-4 py-2 nav-text text-neutral hover:text-primary hover:bg-primary/8 transition-colors inline-block">
+                    Hoteles
+                  </a>
+                </li>
+              )}
+              {cfg.services.tours && (
+                <li>
+                  <a href="/tours" class="rounded-xl px-4 py-2 nav-text text-neutral hover:text-primary hover:bg-primary/8 transition-colors inline-block">
+                    Tours
+                  </a>
+                </li>
+              )}
+              {cfg.services.transfers && (
+                <li>
+                  <a href="/transfers" class="rounded-xl px-4 py-2 nav-text text-neutral hover:text-primary hover:bg-primary/8 transition-colors inline-block">
+                    Traslados
+                  </a>
+                </li>
+              )}
               <li>
                 <a href="/about" class="rounded-xl px-4 py-2 nav-text text-neutral hover:text-primary hover:bg-primary/8 transition-colors inline-block">
                   Nosotros
@@ -285,8 +297,8 @@ const allSchemas = [
               Mis Reservas
             </a>
             <a
-              href="/tours"
-              class="inline-flex items-center h-8 px-5 text-sm font-bold rounded-full bg-violet-500 text-white border-2 border-neutral shadow-pop-sm hover:translate-x-px hover:translate-y-px hover:shadow-none active:translate-x-px active:translate-y-px transition-all"
+              href={ctaHref}
+              class="inline-flex items-center h-8 px-5 text-sm font-bold rounded-full bg-primary text-white border-2 border-neutral shadow-pop-sm hover:translate-x-px hover:translate-y-px hover:shadow-none active:translate-x-px active:translate-y-px transition-all"
             >
               Reservar ✦
             </a>
@@ -327,24 +339,28 @@ const allSchemas = [
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </div>
-              <span class="text-xl font-bold text-white">Booking <span class="text-primary">Caribe</span></span>
+              <span class="text-xl font-bold text-white">
+                {cfg.brand.name.split(' ').slice(0, -1).join(' ')}{' '}
+                <span class="text-primary">{cfg.brand.name.split(' ').at(-1)}</span>
+              </span>
             </a>
-            <p class="text-white/45 text-sm leading-relaxed">
-              Tu plataforma de confianza para explorar y reservar lo mejor del Caribe Mexicano.
-              Tours, hoteles y traslados en un solo lugar.
-            </p>
+            <p class="text-white/45 text-sm leading-relaxed">{cfg.brand.tagline}</p>
             <div class="flex gap-2">
-              <a href="https://facebook.com/bookingcaribe" target="_blank" rel="noopener" aria-label="Facebook" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center text-white">
-                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-                </svg>
-              </a>
-              <a href="https://instagram.com/bookingcaribe" target="_blank" rel="noopener" aria-label="Instagram" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center text-white">
-                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                </svg>
-              </a>
-              <a href="https://wa.me/529981234567" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-7 h-7 rounded-full bg-green-500 hover:bg-green-600 transition-colors flex items-center justify-center text-white">
+              {cfg.contact.socialMedia.facebook && (
+                <a href={cfg.contact.socialMedia.facebook} target="_blank" rel="noopener" aria-label="Facebook" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center text-white">
+                  <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                  </svg>
+                </a>
+              )}
+              {cfg.contact.socialMedia.instagram && (
+                <a href={cfg.contact.socialMedia.instagram} target="_blank" rel="noopener" aria-label="Instagram" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center text-white">
+                  <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                  </svg>
+                </a>
+              )}
+              <a href={`https://wa.me/${cfg.contact.whatsappRaw}`} target="_blank" rel="noopener" aria-label="WhatsApp" class="w-7 h-7 rounded-full bg-green-500 hover:bg-green-600 transition-colors flex items-center justify-center text-white">
                 <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                 </svg>
@@ -383,18 +399,21 @@ const allSchemas = [
               Servicios
             </h3>
             <ul class="space-y-2.5 text-sm">
-              {[
-                { href: '/hotels', label: '🏨 Hoteles' },
-                { href: '/tours', label: '🌴 Tours y Actividades' },
-                { href: '/transfers', label: '🚐 Traslados Privados' },
-                { href: '/transfers', label: '🚌 Traslados Compartidos' },
-              ].map(({ href, label }) => (
+              {cfg.services.hotels && (
                 <li>
-                  <a href={href} class="text-white/60 hover:text-white transition-colors">
-                    {label}
-                  </a>
+                  <a href="/hotels" class="text-white/60 hover:text-white transition-colors">🏨 Hoteles</a>
                 </li>
-              ))}
+              )}
+              {cfg.services.tours && (
+                <li>
+                  <a href="/tours" class="text-white/60 hover:text-white transition-colors">🌴 Tours y Actividades</a>
+                </li>
+              )}
+              {cfg.services.transfers && (
+                <li>
+                  <a href="/transfers" class="text-white/60 hover:text-white transition-colors">🚐 Traslados</a>
+                </li>
+              )}
               <li class="pt-2 border-t border-white/10">
                 <a href="/about" class="text-white/60 hover:text-white transition-colors block mb-2.5">Sobre Nosotros</a>
                 <a href="/contact" class="text-white/60 hover:text-white transition-colors block mb-2.5">Contacto</a>
@@ -414,19 +433,19 @@ const allSchemas = [
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                <span>Cancún, Quintana Roo<br />México</span>
+                <span>{cfg.contact.address}</span>
               </li>
               <li class="flex items-center gap-2.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                 </svg>
-                <a href="tel:+529981234567" class="hover:text-white transition-colors">+52 998 123 4567</a>
+                <a href={`tel:${cfg.contact.phone.replace(/\s/g, '')}`} class="hover:text-white transition-colors">{cfg.contact.phone}</a>
               </li>
               <li class="flex items-center gap-2.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
-                <a href="mailto:info@bookingcaribe.com" class="hover:text-white transition-colors">info@bookingcaribe.com</a>
+                <a href={`mailto:${cfg.contact.email}`} class="hover:text-white transition-colors">{cfg.contact.email}</a>
               </li>
               <li class="flex items-center gap-2.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -436,7 +455,7 @@ const allSchemas = [
               </li>
             </ul>
             <a
-              href="https://wa.me/529981234567?text=Hola,%20quiero%20información%20sobre%20tours%20en%20Cancún"
+              href={`https://wa.me/${cfg.contact.whatsappRaw}?text=Hola,%20quiero%20información`}
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center justify-center w-full gap-2 h-9 px-4 text-sm font-bold rounded-full bg-green-500 text-white border-2 border-white/20 hover:bg-green-400 transition-all mt-5"
@@ -454,7 +473,7 @@ const allSchemas = [
       <div class="border-t border-white/10 relative z-10">
         <div class="container mx-auto px-4 py-5">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/35">
-            <p>© {new Date().getFullYear()} Booking Caribe. Todos los derechos reservados.</p>
+            <p>© {new Date().getFullYear()} {cfg.brand.name}. Todos los derechos reservados.</p>
             <nav class="flex gap-5">
               <a href="/terms" class="hover:text-white transition-colors">Términos</a>
               <a href="/privacy" class="hover:text-white transition-colors">Privacidad</a>
@@ -471,7 +490,7 @@ const allSchemas = [
     <!-- ===== WhatsApp Floating Button ===== -->
     <a
       id="whatsapp-btn"
-      href="https://wa.me/529981234567?text=Hola,%20quiero%20información%20sobre%20tours%20y%20traslados%20en%20Cancún"
+      href={`https://wa.me/${cfg.contact.whatsappRaw}?text=Hola,%20quiero%20información`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"

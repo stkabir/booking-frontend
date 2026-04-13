@@ -1,6 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { api } from '../../lib/api';
+import { getClientConfig } from '../../config/client.config';
+
+if (!(await getClientConfig()).services.tours) return Astro.redirect('/');
 
 const tours = await api.getTours().catch(() => []);
 const destinations = [...new Set(tours.map(t => t.destination))].filter(Boolean);

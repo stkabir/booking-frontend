@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import HotelList from '../../components/HotelList';
 import { api } from '../../lib/api';
+import { getClientConfig } from '../../config/client.config';
+
+if (!(await getClientConfig()).services.hotels) return Astro.redirect('/');
 
 const hotels = await api.getHotels().catch(() => []);
 ---
