@@ -161,7 +161,7 @@ export async function getClientConfig(): Promise<ClientConfig> {
 
   try {
     const apiUrl = defaultConfig.api.baseUrl;
-    const res = await fetch(`${apiUrl}/v1/config`, {
+    const res = await fetch(`${apiUrl}/config`, {
       signal: AbortSignal.timeout(3000), // 3 segundos máximo
       headers: { Accept: 'application/json' },
     });
