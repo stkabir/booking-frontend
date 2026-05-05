@@ -198,4 +198,41 @@ export const api = {
     const data = await response.json();
     return data?.data ?? data;
   },
+
+  // OpenPay Configuration
+  async getOpenPayConfig(): Promise<{ merchant_id: string; public_key: string; mode: string; location: string }> {
+    const response = await fetch(`${API_URL}/payments/config`);
+    if (!response.ok) throw new Error('Error al obtener configuración de OpenPay');
+    const data = await response.json();
+    return data?.data ?? data;
+  },
+
+  // Process Payment (requires auth)
+  async processPayment(payload: {
+    order_id: number;
+    token: string;
+    device_session_id: string;
+    customer?: {
+      name?: string;
+      last_name?: string;
+      email?: string;
+      phone?: string;
+    };
+  }): Promise<{ success: boolean; message: string; payment_id?: number; authorization?: string }> {
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(`${API_URL}/payments/process`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Error al procesar el pago');
+    }
+    return data;
+  },
 };

@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CartCheckoutPage from '../components/CartCheckoutPage';
+
+const title = 'Finalizar Compra';
+---
+
+<Layout title={title}>
+  <CartCheckoutPage client:load />
+</Layout>

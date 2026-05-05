@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import { getClientConfig } from '../config/client.config';
+import CartProvider from '../components/CartProvider';
+import CartNavButton from '../components/CartNavButton';
 
 const cfg = await getClientConfig();
 
@@ -290,6 +292,7 @@ const allSchemas = [
 
           <!-- CTAs -->
           <div class="flex items-center gap-2 ml-auto">
+            <CartNavButton client:load />
             <a
               href="/bookings"
               class="hidden md:inline-flex items-center h-8 px-4 text-sm font-semibold rounded-lg nav-text text-neutral/70 hover:text-neutral hover:bg-neutral/8 transition-colors"
@@ -313,7 +316,9 @@ const allSchemas = [
 
     <!-- ===== MAIN CONTENT ===== -->
     <main>
-      <slot />
+      <CartProvider client:load>
+        <slot />
+      </CartProvider>
     </main>
 
     <!-- Wave transition → dark footer -->

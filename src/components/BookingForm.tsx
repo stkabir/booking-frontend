@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useCartStore, type CartItem } from '../store/cartStore';
 
 interface BookingFormProps {
   itemType: 'hotel' | 'tour' | 'transfer';
@@ -7,6 +8,12 @@ interface BookingFormProps {
   itemPrice: number;
   itemSlug: string;
   childPrice?: number;
+  image?: string;
+  duration?: string;
+  destination?: string;
+  vehicleType?: string;
+  fromLocation?: string;
+  toLocation?: string;
 }
 
 type PromoState = 'idle' | 'success' | 'error';
@@ -121,6 +128,12 @@ export default function BookingForm({
   itemPrice,
   itemSlug,
   childPrice,
+  image,
+  duration,
+  destination,
+  vehicleType,
+  fromLocation,
+  toLocation,
 }: BookingFormProps) {
   const today = new Date().toISOString().split('T')[0];
 
@@ -195,20 +208,42 @@ export default function BookingForm({
 
   const validate = (): Record<string, string> => {
     const e: Record<string, string> = {};
-    if (!formData.customerName.trim()) e.customerName = 'Ingresa tu nombre completo';
-    if (!formData.customerEmail.trim()) {
-      e.customerEmail = 'Ingresa tu correo electrónico';
-    } else if (!/\S+@\S+\.\S+/.test(formData.customerEmail)) {
-      e.customerEmail = 'El correo no parece válido';
-    }
-    if (!formData.customerPhone.trim()) e.customerPhone = 'Ingresa tu número de teléfono';
     if (!formData.startDate) e.startDate = 'Selecciona una fecha';
     if (itemType === 'hotel' && !formData.endDate) e.endDate = 'Selecciona la fecha de salida';
     if (itemType === 'transfer' && !formData.pickupTime) e.pickupTime = 'Indica la hora de recogida';
     return e;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Cart store from Zustand (works across Astro islands)
+  const cart = useCartStore();
+
+  const buildCartItem = (): Omit<CartItem, 'id' | 'addedAt'> => {
+    return {
+      type: itemType,
+      itemId,
+      name: itemName,
+      slug: itemSlug,
+      image,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      pickupTime: formData.pickupTime,
+      adults: formData.adults,
+      children: formData.children,
+      pricePerUnit: itemPrice,
+      subtotal,
+      discount: discountAmount,
+      tax,
+      total,
+      nights: itemType === 'hotel' ? nights : undefined,
+      duration,
+      destination,
+      vehicleType,
+      fromLocation,
+      toLocation,
+    };
+  };
+
+  const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
 
@@ -222,27 +257,26 @@ export default function BookingForm({
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      const bookingData = {
-        ...formData,
-        itemType,
-        itemId,
-        itemSlug,
-        itemName,
-        subtotal,
-        discount: discountAmount,
-        promoCode: promoState === 'success' ? promoCode : null,
-        tax,
-        total,
-        nights: itemType === 'hotel' ? nights : undefined,
-      };
-      localStorage.setItem('bookingData', JSON.stringify(bookingData));
-      window.location.href = '/checkout';
-    } catch {
-      setIsSubmitting(false);
-      setSubmitError('Hubo un problema. Por favor intenta de nuevo.');
+    cart.addItem(buildCartItem());
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitError('');
+
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setTimeout(() => {
+        const el = document.querySelector('[data-has-error="true"]');
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 50);
+      return;
     }
+
+    // Add to cart and go to checkout
+    cart.addItem(buildCartItem());
+    window.location.href = '/checkout';
   };
 
   const inputCls = (field: string) =>
@@ -352,49 +386,6 @@ export default function BookingForm({
         )}
       </div>
 
-      {/* ── Step 3: Datos de Contacto ── */}
-      <div className="space-y-3">
-        <h3 className="font-black text-slate-800 flex items-center gap-2 text-sm">
-          <span className={stepNumCls}>3</span>
-          Datos de Contacto
-        </h3>
-
-        <div data-has-error={!!errors.customerName || undefined}>
-          <label className={labelCls}>Nombre Completo *</label>
-          <input type="text" name="customerName" placeholder="Juan García"
-            className={inputCls('customerName')} value={formData.customerName} onChange={handleInput} />
-          <FieldError message={errors.customerName} />
-        </div>
-
-        <div data-has-error={!!errors.customerEmail || undefined}>
-          <label className={labelCls}>Correo Electrónico *</label>
-          <input type="email" name="customerEmail" placeholder="tu@correo.com"
-            className={inputCls('customerEmail')} value={formData.customerEmail} onChange={handleInput} />
-          <FieldError message={errors.customerEmail} />
-        </div>
-
-        <div data-has-error={!!errors.customerPhone || undefined}>
-          <label className={labelCls}>Teléfono *</label>
-          <input type="tel" name="customerPhone" placeholder="+52 998 123 4567"
-            className={inputCls('customerPhone')} value={formData.customerPhone} onChange={handleInput} />
-          <FieldError message={errors.customerPhone} />
-        </div>
-
-        <div>
-          <label className={labelCls}>
-            Peticiones Especiales <span className="font-normal normal-case text-slate-400">(opcional)</span>
-          </label>
-          <textarea
-            name="specialRequests"
-            placeholder="Dietas especiales, accesibilidad, cumpleaños..."
-            className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-slate-800 text-sm font-medium placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:border-violet-500 focus:shadow-[3px_3px_0px_0px_#8B5CF6] transition-all resize-none"
-            rows={2}
-            value={formData.specialRequests}
-            onChange={handleInput}
-          />
-        </div>
-      </div>
-
       {/* ── Código Promocional ── */}
       <div className="space-y-2">
         <label className={labelCls}>Código Promocional</label>
@@ -486,31 +477,48 @@ export default function BookingForm({
 
       {submitError && <InlineBanner type="error" message={submitError} onDismiss={() => setSubmitError('')} />}
 
-      {/* ── Submit ── */}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full h-12 bg-violet-500 text-white font-black rounded-full border-2 border-slate-800 shadow-[3px_3px_0px_0px_#1E293B]
-                   flex items-center justify-center gap-2
-                   hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[5px_5px_0px_0px_#1E293B]
-                   active:translate-x-px active:translate-y-px active:shadow-[1px_1px_0px_0px_#1E293B]
-                   transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed
-                   disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-[3px_3px_0px_0px_#1E293B]"
-      >
-        {isSubmitting ? (
-          <>
-            <Spinner sm />
-            Procesando...
-          </>
-        ) : (
-          <>
-            Continuar al Pago
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </>
-        )}
-      </button>
+      {/* ── Buttons ── */}
+      <div className="space-y-3">
+        {/* Add to Cart */}
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="w-full h-11 bg-white text-violet-600 font-black rounded-full border-2 border-violet-500
+                     flex items-center justify-center gap-2
+                     hover:bg-violet-50 transition-all duration-150"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Agregar al Carrito
+        </button>
+
+        {/* Checkout */}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-12 bg-violet-500 text-white font-black rounded-full border-2 border-slate-800 shadow-[3px_3px_0px_0px_#1E293B]
+                     flex items-center justify-center gap-2
+                     hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[5px_5px_0px_0px_#1E293B]
+                     active:translate-x-px active:translate-y-px active:shadow-[1px_1px_0px_0px_#1E293B]
+                     transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed
+                     disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-[3px_3px_0px_0px_#1E293B]"
+        >
+          {isSubmitting ? (
+            <>
+              <Spinner sm />
+              Procesando...
+            </>
+          ) : (
+            <>
+              Reservar Ahora
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </>
+          )}
+        </button>
+      </div>
 
       <p className="text-xs text-center text-slate-400">
         Al continuar aceptas nuestros{' '}

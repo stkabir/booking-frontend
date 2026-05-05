@@ -1,5 +1,9 @@
 @import "tailwindcss";
-@plugin "daisyui";
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
 
 /* ===== PLAYFUL GEOMETRIC THEME ===== */
 @theme {
